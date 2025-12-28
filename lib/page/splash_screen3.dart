@@ -36,10 +36,24 @@ SafeArea(
               child: const Text(
                 "Skip",
                 style: TextStyle(color: Colors.white70, fontSize: 14),
-              ),
+              )
             ),
           ],
         ),
+        const SizedBox(height: 40),
+const Text(
+  "Place order",
+  style: TextStyle(
+    color: Colors.white,
+    fontSize: 26,
+    fontWeight: FontWeight.bold,
+  ),
+),
+const SizedBox(height: 10),
+const Text(
+  "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
+  style: TextStyle(color: Colors.white70, fontSize: 14),
+),
       ],
     ),
   ),
