@@ -19,6 +19,31 @@ ClipPath(
     color: const Color(0xFF111827),
   ),
 ),
+
+// icon kembali dan skip (masih dummy)
+SafeArea(
+  child: Padding(
+    padding: const EdgeInsets.all(20),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Icon(Icons.arrow_back, color: Colors.white),
+            GestureDetector(
+              onTap: () {},
+              child: const Text(
+                "Skip",
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+),
         ],
       ),
     );
