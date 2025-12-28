@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uas_mobile_app/page/splash_screen3.dart';
 
 void main(){
   runApp(const MyApp());
@@ -9,6 +10,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const MaterialApp(
+      debugShowCheckedModeBanner: true,
+      home: SplashPageThree(),
+    );
   }
 }
