@@ -54,6 +54,19 @@ const Text(
   "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
   style: TextStyle(color: Colors.white70, fontSize: 14),
 ),
+const SizedBox(height: 30),
+Expanded(
+  child: Align(
+    alignment: Alignment.topCenter,
+    child: FractionallySizedBox(
+      widthFactor: 0.9,
+      child: Image.asset(
+        'assets/images/3.png',
+        fit: BoxFit.contain,
+      ),
+    ),
+  ),
+),
       ],
     ),
   ),
