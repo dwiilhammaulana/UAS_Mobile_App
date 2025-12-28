@@ -1,8 +1,9 @@
 # Kelompok Anak Baik
 
-## aplikasi Mobile TodoList Berbasis Nontifikasi realtime
-nama: 
-Dwi ilham maulana
-Ulin nuha
-M Ramzy
-Saylendra F
+## Aplikasi Mobile TodoList Berbasis Notifikasi Realtime
+
+### Anggota Kelompok:
+- Dwi Ilham Maulana
+- Ulin Nuha
+- M. Ramzy
+- Saylendra F
