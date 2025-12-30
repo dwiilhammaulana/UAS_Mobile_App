@@ -90,5 +90,10 @@ void _checkAuthAndNavigate() {
     );
   });
 }
+@override
+void dispose() {
+  _controller.dispose();
+  super.dispose();
+}
 
 
