@@ -13,4 +13,5 @@ class IntroAnimationPage extends StatefulWidget {
 class _IntroAnimationPageState extends State<IntroAnimationPage> {
 class _IntroAnimationPageState extends State<IntroAnimationPage>
     with SingleTickerProviderStateMixin {
+late AnimationController _controller;
 
