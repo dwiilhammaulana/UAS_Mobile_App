@@ -53,5 +53,14 @@ _textSlideAnimation = Tween<Offset>(
     curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
   ),
 );
+_textFadeAnimation = Tween<double>(
+  begin: 0.0,
+  end: 1.0,
+).animate(
+  CurvedAnimation(
+    parent: _controller,
+    curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+  ),
+);
 
 
