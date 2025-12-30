@@ -14,4 +14,6 @@ class _IntroAnimationPageState extends State<IntroAnimationPage> {
 class _IntroAnimationPageState extends State<IntroAnimationPage>
     with SingleTickerProviderStateMixin {
 late AnimationController _controller;
+late Animation<Offset> _logoSlideAnimation;
+late Animation<double> _logoScaleAnimation;
 
