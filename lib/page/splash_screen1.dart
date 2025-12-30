@@ -8,6 +8,11 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFC107), // kuning
+      body: Stack(
+        children: [
+          
+        ],
+      ),
     )
   }
 }
