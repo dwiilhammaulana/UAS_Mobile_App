@@ -19,6 +19,10 @@ class MyWidget extends StatelessWidget {
               color: const Color(0xFF111827),
             ),
           ),
+
+        SafeArea(
+          
+        )
         ],
       ),
     )
