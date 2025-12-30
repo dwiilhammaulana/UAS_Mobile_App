@@ -16,4 +16,7 @@ class _IntroAnimationPageState extends State<IntroAnimationPage>
 late AnimationController _controller;
 late Animation<Offset> _logoSlideAnimation;
 late Animation<double> _logoScaleAnimation;
+late Animation<Offset> _textSlideAnimation;
+late Animation<double> _textFadeAnimation;
+
 
