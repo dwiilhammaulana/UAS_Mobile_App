@@ -93,7 +93,7 @@ class SplashPageOne extends StatelessWidget {
                               context,
                               PageRouteBuilder(
                                 pageBuilder: (_, __, ___) =>
-                                    const SplashPageOne(),
+                                    const SplashPageTwo(),
                                 transitionsBuilder: (_, animation, __, child) {
                                   return FadeTransition(
                                     opacity: animation,
