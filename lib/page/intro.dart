@@ -44,5 +44,14 @@ _logoScaleAnimation = Tween<double>(
     curve: Curves.easeOut,
   ),
 );
+_textSlideAnimation = Tween<Offset>(
+  begin: const Offset(-0.3, 0.0),
+  end: Offset.zero,
+).animate(
+  CurvedAnimation(
+    parent: _controller,
+    curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
+  ),
+);
 
 
