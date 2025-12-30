@@ -18,5 +18,13 @@ late Animation<Offset> _logoSlideAnimation;
 late Animation<double> _logoScaleAnimation;
 late Animation<Offset> _textSlideAnimation;
 late Animation<double> _textFadeAnimation;
+@override
+void initState() {
+  super.initState();
+
+  _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
 
 
