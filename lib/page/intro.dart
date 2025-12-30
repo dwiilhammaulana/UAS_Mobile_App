@@ -65,5 +65,30 @@ _textFadeAnimation = Tween<double>(
 _controller.forward();
 _checkAuthAndNavigate();
 }
+void _checkAuthAndNavigate() {
+  Timer(const Duration(seconds: 3), () {
+    if (!mounted) return;
+
+    final session = Supabase.instance.client.auth.currentSession;
+
+    Widget destination;
+    if (session != null) {
+      destination = const HomePage();
+    } else {
+      destination = const SplashPageOne();
+    }
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => destination,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 800),
+      ),
+    );
+  });
+}
 
 
