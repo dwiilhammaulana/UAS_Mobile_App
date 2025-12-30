@@ -10,7 +10,15 @@ class MyWidget extends StatelessWidget {
       backgroundColor: const Color(0xFFFFC107), // kuning
       body: Stack(
         children: [
-          
+          // ===== BACKGROUND HITAM MELENGKUNG =====  
+          ClipPath(
+            clipper: TopCurveClipper(),
+            child: Container(
+              height: 300,
+              width: double.infinity,
+              color: const Color(0xFF111827),
+            ),
+          ),
         ],
       ),
     )
