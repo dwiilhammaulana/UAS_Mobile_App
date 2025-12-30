@@ -42,6 +42,20 @@ class MyWidget extends StatelessWidget {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 40),
+
+                  // ===== TEXT =====
+                  const Text(
+                    "Place order",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  
               ],
             ),
             ),
