@@ -26,5 +26,14 @@ void initState() {
     vsync: this,
     duration: const Duration(seconds: 2),
   );
+_logoSlideAnimation = Tween<Offset>(
+  begin: const Offset(0, 2.0),
+  end: Offset.zero,
+).animate(
+  CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutBack,
+  ),
+);
 
 
