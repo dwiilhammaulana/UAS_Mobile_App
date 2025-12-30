@@ -18,8 +18,11 @@ class SplashPageTwo extends StatelessWidget {
     ),
   ),
    SafeArea(
+  child: Padding(
+    padding: const EdgeInsets.all(20),
     child: Container(),
   ),
+),
 ],
 ),
 );  
