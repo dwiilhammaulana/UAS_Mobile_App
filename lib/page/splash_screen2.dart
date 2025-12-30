@@ -6,71 +6,76 @@ class SplashPageTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-   backgroundColor: const Color(0xFFFFC107),
-   body: Stack(
-  children: [
-  ClipPath(
-    clipper: TopCurveClipper(),
-    child: Container(
-      height: 300,
-      width: double.infinity,
-      color: const Color(0xFF111827),
-    ),
-  ),
-   SafeArea(
-  child: Padding(
-    padding: const EdgeInsets.all(20),
-    child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: const [
-    const Icon(Icons.arrow_back, color: Colors.white),
-    const Text(
-  "Skip",
-  style: TextStyle(color: Colors.white70),
-),
-  ],
-),
+      backgroundColor: const Color(0xFFFFC107),
+      body: Stack(
+        children: [
+          ClipPath(
+            clipper: TopCurveClipper(),
+            child: Container(
+              height: 300,
+              width: double.infinity,
+              color: const Color(0xFF111827),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Icon(Icons.arrow_back, color: Colors.white),
+                      Text(
+                        "Skip",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  const Text(
+                    "Place order",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: Image.asset(
+                        'assets/images/2.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-const SizedBox(height: 40),
-
-const Text(
-  "Place order",
-  style: TextStyle(
-    color: Colors.white,
-    fontSize: 26,
-    fontWeight: FontWeight.bold,
-  ),
-),
-
-const SizedBox(height: 10),
-
-const Text(
-  "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
-  style: TextStyle(color: Colors.white70),
-),
-
-const SizedBox(height: 30),
-
-Expanded(
-  child: Align(
-    alignment: Alignment.topCenter,
-    child: Image.asset(
-      'assets/images/2.png',
-      fit: BoxFit.contain,
-    ),
-  ),
-),
-
-],
-),
-  ),
-),
-],
-),
-);  
+  
+  static Widget _dot(bool active) {
+    return Container(
+      width: active ? 10 : 6,
+      height: 6,
+      decoration: BoxDecoration(
+        color: active ? Colors.black : Colors.black38,
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
   }
 }
 
