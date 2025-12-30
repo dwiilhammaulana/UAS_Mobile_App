@@ -60,6 +60,22 @@ class MyWidget extends StatelessWidget {
                     "TEST",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
+
+                  // ===== GAMBAR TENGAH =====
+                  const SizedBox(height: 30),
+                                    Expanded(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: FractionallySizedBox(
+                        widthFactor: 0.9, // lebar relatif layar
+                        child: Image.asset(
+                          'assets/images/1.png',
+                          fit: BoxFit.contain, // rasio AMAN
+                        ),
+                      ),
+                    ),
+                  ),
+                  
               ],
             ),
             ),
