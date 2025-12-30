@@ -75,7 +75,10 @@ class MyWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+                  // ===== INDICATOR + NEXT =====
+                  Row(
+                    
+                  )
               ],
             ),
             ),
