@@ -21,7 +21,12 @@ class MyWidget extends StatelessWidget {
           ),
 
         SafeArea(
-          
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            ),
         )
         ],
       ),
