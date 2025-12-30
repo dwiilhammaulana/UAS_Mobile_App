@@ -10,7 +10,7 @@ class MyWidget extends StatelessWidget {
       backgroundColor: const Color(0xFFFFC107), // kuning
       body: Stack(
         children: [
-          // ===== BACKGROUND HITAM MELENGKUNG =====  
+          // ===== BACKGROUND HITAM MELENGKUNG =====
           ClipPath(
             clipper: TopCurveClipper(),
             child: Container(
@@ -20,12 +20,12 @@ class MyWidget extends StatelessWidget {
             ),
           ),
 
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   // ===== HEADER =====
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,7 +63,7 @@ class MyWidget extends StatelessWidget {
 
                   // ===== GAMBAR TENGAH =====
                   const SizedBox(height: 30),
-                                    Expanded(
+                  Expanded(
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FractionallySizedBox(
@@ -77,14 +77,78 @@ class MyWidget extends StatelessWidget {
                   ),
                   // ===== INDICATOR + NEXT =====
                   Row(
-                    
-                  )
-              ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [_dot(true), _dot(false), _dot(false)]),
+                      CircleAvatar(
+                        radius: 26,
+                        backgroundColor: Colors.black,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) =>
+                                    const SplashPageTwo(),
+                                transitionsBuilder: (_, animation, __, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                                transitionDuration: const Duration(
+                                  milliseconds: 200,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            ),
-        )
+          ),
         ],
       ),
-    )
+    );
   }
+  static Widget _dot(bool active) {
+    return Container(
+      margin: const EdgeInsets.only(right: 6),
+      width: active ? 10 : 6,
+      height: 6,
+      decoration: BoxDecoration(
+        color: active ? Colors.black : const Color.fromARGB(96, 0, 0, 0),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
+  /// ===== CUSTOM CLIPPER UNTUK LENGKUNG =====
+class TopCurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 60);
+
+    path.quadraticBezierTo(
+      size.width / 2,
+      size.height + 40,
+      size.width,
+      size.height - 60,
+    );
+
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
