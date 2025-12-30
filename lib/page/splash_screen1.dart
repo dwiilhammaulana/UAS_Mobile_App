@@ -47,7 +47,7 @@ class SplashPageOne extends StatelessWidget {
 
                   // ===== TEXT =====
                   const Text(
-                    "Place order",
+                    "Syailendra Fas Faye",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -57,7 +57,7 @@ class SplashPageOne extends StatelessWidget {
 
                   const SizedBox(height: 10),
                   const Text(
-                    "TEST",
+                    "1123150198",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
