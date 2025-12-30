@@ -8,7 +8,16 @@ class SplashPageTwo extends StatelessWidget {
     return Scaffold(
    backgroundColor: const Color(0xFFFFC107),
    body: Stack(
-  children: [],
+  children: [
+  ClipPath(
+    clipper: TopCurveClipper(),
+    child: Container(
+      height: 300,
+      width: double.infinity,
+      color: const Color(0xFF111827),
+    ),
+  ),
+],
 ),
 );  
   }
