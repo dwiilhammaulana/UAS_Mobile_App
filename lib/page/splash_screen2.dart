@@ -17,6 +17,9 @@ class SplashPageTwo extends StatelessWidget {
       color: const Color(0xFF111827),
     ),
   ),
+   SafeArea(
+    child: Container(),
+  ),
 ],
 ),
 );  
