@@ -52,6 +52,18 @@ const Text(
   style: TextStyle(color: Colors.white70),
 ),
 
+const SizedBox(height: 30),
+
+Expanded(
+  child: Align(
+    alignment: Alignment.topCenter,
+    child: Image.asset(
+      'assets/images/2.png',
+      fit: BoxFit.contain,
+    ),
+  ),
+),
+
 ],
 ),
   ),
