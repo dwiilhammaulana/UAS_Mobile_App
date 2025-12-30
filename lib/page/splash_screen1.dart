@@ -25,6 +25,24 @@ class MyWidget extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                  // ===== HEADER =====
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.arrow_back, color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          // nanti ke AuthScreen
+                        },
+                        child: const Text(
+                          "Skip",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
             ),
             ),
         )
