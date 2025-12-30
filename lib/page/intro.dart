@@ -10,4 +10,5 @@ class IntroAnimationPage extends StatefulWidget {
   @override
   State<IntroAnimationPage> createState() => _IntroAnimationPageState();
 }
+class _IntroAnimationPageState extends State<IntroAnimationPage> {
 
