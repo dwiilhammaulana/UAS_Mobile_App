@@ -27,6 +27,10 @@ class SplashPageTwo extends StatelessWidget {
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
   children: const [
     const Icon(Icons.arrow_back, color: Colors.white),
+    const Text(
+  "Skip",
+  style: TextStyle(color: Colors.white70),
+),
   ],
 ),
 ],
