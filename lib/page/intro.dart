@@ -62,5 +62,8 @@ _textFadeAnimation = Tween<double>(
     curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
   ),
 );
+_controller.forward();
+_checkAuthAndNavigate();
+}
 
 
