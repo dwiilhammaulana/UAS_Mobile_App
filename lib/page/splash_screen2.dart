@@ -33,6 +33,17 @@ class SplashPageTwo extends StatelessWidget {
 ),
   ],
 ),
+
+const SizedBox(height: 40),
+
+const Text(
+  "Place order",
+  style: TextStyle(
+    color: Colors.white,
+    fontSize: 26,
+    fontWeight: FontWeight.bold,
+  ),
+),
 ],
 ),
   ),
