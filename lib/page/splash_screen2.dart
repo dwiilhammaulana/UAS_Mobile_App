@@ -44,6 +44,14 @@ const Text(
     fontWeight: FontWeight.bold,
   ),
 ),
+
+const SizedBox(height: 10),
+
+const Text(
+  "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
+  style: TextStyle(color: Colors.white70),
+),
+
 ],
 ),
   ),
