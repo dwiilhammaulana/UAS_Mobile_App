@@ -77,7 +77,38 @@ class MyWidget extends StatelessWidget {
                   ),
                   // ===== INDICATOR + NEXT =====
                   Row(
-                    
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                        Row(children: [_dot(true), _dot(false), _dot(false)]),
+                      CircleAvatar(
+                        radius: 26,
+                        backgroundColor: Colors.black,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) =>
+                                    const SplashPageTwo(),
+                                transitionsBuilder: (_, animation, __, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                                transitionDuration: const Duration(
+                                  milliseconds: 200,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   )
               ],
             ),
