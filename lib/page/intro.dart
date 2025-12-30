@@ -11,4 +11,6 @@ class IntroAnimationPage extends StatefulWidget {
   State<IntroAnimationPage> createState() => _IntroAnimationPageState();
 }
 class _IntroAnimationPageState extends State<IntroAnimationPage> {
+class _IntroAnimationPageState extends State<IntroAnimationPage>
+    with SingleTickerProviderStateMixin {
 
