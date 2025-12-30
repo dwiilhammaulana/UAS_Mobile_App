@@ -25,7 +25,9 @@ class SplashPageTwo extends StatelessWidget {
   children: [
     Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: const [],
+  children: const [
+    const Icon(Icons.arrow_back, color: Colors.white),
+  ],
 ),
 ],
 ),
