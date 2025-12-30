@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:testing_2/page/splash_screen2.dart';
+import 'package:uas_mobile_app/page/splash_screen3.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class SplashPageOne extends StatelessWidget {
+  const SplashPageOne({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class MyWidget extends StatelessWidget {
 
                   // ===== TEXT =====
                   const Text(
-                    "Place order",
+                    "Syailendra Fas Faye",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -57,7 +57,7 @@ class MyWidget extends StatelessWidget {
 
                   const SizedBox(height: 10),
                   const Text(
-                    "TEST",
+                    "1123150198",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
@@ -118,6 +118,7 @@ class MyWidget extends StatelessWidget {
       ),
     );
   }
+
   static Widget _dot(bool active) {
     return Container(
       margin: const EdgeInsets.only(right: 6),
@@ -129,8 +130,9 @@ class MyWidget extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// ===== CUSTOM CLIPPER UNTUK LENGKUNG =====
+/// ===== CUSTOM CLIPPER UNTUK LENGKUNG =====
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
