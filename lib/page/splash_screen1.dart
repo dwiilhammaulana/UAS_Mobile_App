@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uas_mobile_app/page/splash_screen3.dart';
+import 'package:uas_mobile_app/page/splash_screen2.dart';
 
 class SplashPageOne extends StatelessWidget {
   const SplashPageOne({super.key});

@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+// import 'package:uas_mobile_app/page/login.dart';
+import 'package:uas_mobile_app/page/splash_screen3.dart';
 
 class SplashPageTwo extends StatelessWidget {
   const SplashPageTwo({super.key});
+
+static Widget _dot(bool active) {
+  return Container(
+    margin: const EdgeInsets.only(right: 6),
+    width: active ? 10 : 6,
+    height: 6,
+    decoration: BoxDecoration(
+      color: active ? Colors.black : Colors.black38,
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -9,6 +23,7 @@ class SplashPageTwo extends StatelessWidget {
       backgroundColor: const Color(0xFFFFC107),
       body: Stack(
         children: [
+          // Masukkan ke dalam children Stack di Tahap 1
           ClipPath(
             clipper: TopCurveClipper(),
             child: Container(
@@ -17,6 +32,8 @@ class SplashPageTwo extends StatelessWidget {
               color: const Color(0xFF111827),
             ),
           ),
+
+          // icon kembali dan skip (masih dummy)
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -25,11 +42,14 @@ class SplashPageTwo extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Icon(Icons.arrow_back, color: Colors.white),
-                      Text(
-                        "Skip",
-                        style: TextStyle(color: Colors.white70),
+                    children: [
+                      const Icon(Icons.arrow_back, color: Colors.white),
+                      GestureDetector(
+                        onTap: () {},
+                        child: const Text(
+                          "Skip",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
                       ),
                     ],
                   ),
@@ -45,18 +65,47 @@ class SplashPageTwo extends StatelessWidget {
                   const SizedBox(height: 10),
                   const Text(
                     "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 30),
                   Expanded(
                     child: Align(
                       alignment: Alignment.topCenter,
-                      child: Image.asset(
-                        'assets/images/2.png',
-                        fit: BoxFit.contain,
+                      child: FractionallySizedBox(
+                        widthFactor: 0.9,
+                        child: Image.asset(
+                          'assets/images/2.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ),
+
+                  Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Row(children: [_dot(false), _dot(true), _dot(false)]),
+    CircleAvatar(
+      radius: 26,
+      backgroundColor: Colors.black,
+      child: IconButton(
+        icon: const Icon(Icons.arrow_forward, color: Colors.white),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => const SplashPageThree(),
+              transitionsBuilder: (_, animation, __, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              transitionDuration: const Duration(milliseconds: 200),
+            ),
+          );
+        },
+      ),
+    ),
+  ],
+),
                 ],
               ),
             ),
@@ -65,20 +114,9 @@ class SplashPageTwo extends StatelessWidget {
       ),
     );
   }
-
-  
-  static Widget _dot(bool active) {
-    return Container(
-      width: active ? 10 : 6,
-      height: 6,
-      decoration: BoxDecoration(
-        color: active ? Colors.black : Colors.black38,
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
-  }
 }
 
+// ini untuk buat lengkungan item diatas
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
