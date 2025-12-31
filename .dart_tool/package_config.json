@@ -146,6 +146,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "google_fonts",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.3.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
       "name": "gotrue",
       "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/gotrue-2.18.0",
       "packageUri": "lib/",
