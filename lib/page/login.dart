@@ -134,7 +134,20 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ],
                       ),
-                      child: const SizedBox.shrink(),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              labelText: "Email",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(Icons.email_outlined),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
