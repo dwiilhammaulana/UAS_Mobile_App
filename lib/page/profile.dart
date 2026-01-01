@@ -16,6 +16,29 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    setState(() => _isLoading = true);
+    try {
+      final userId = supabase.auth.currentUser!.id;
+      final data = await supabase.from('profiles').select().eq('id', userId).maybeSingle();
+
+      if (data != null) {
+        _fullNameController.text = data['full_name'] ?? '';
+        _usernameController.text = data['username'] ?? '';
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
