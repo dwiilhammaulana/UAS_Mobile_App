@@ -72,6 +72,21 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
     }
   }
 
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'in_progress':
+        return Colors.deepPurple;
+      case 'todo':
+        return Colors.grey;
+      case 'pending':
+        return Colors.blue;
+      case 'completed':
+        return Colors.green;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +120,44 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
             ),
           ),
           const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedStatus,
+                  decoration: const InputDecoration(labelText: "Status"),
+                  items: ['todo', 'pending', 'in_progress', 'completed']
+                      .map(
+                        (s) => DropdownMenuItem(
+                          value: s,
+                          child: Text(
+                            s.toUpperCase(),
+                            style: TextStyle(
+                              color: _getStatusColor(s),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() => _selectedStatus = v!),
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedPriority,
+                  decoration: const InputDecoration(labelText: "Prioritas"),
+                  items: ['low', 'medium', 'high']
+                      .map((p) => DropdownMenuItem(value: p, child: Text(p.toUpperCase())))
+                      .toList(),
+                  onChanged: (v) => setState(() => _selectedPriority = v!),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 25),
           const Text(
             "Keterangan",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
