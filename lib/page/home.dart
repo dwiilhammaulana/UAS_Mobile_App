@@ -33,6 +33,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _showAddSheet() {
+    _titleController.clear();
+    _descController.clear();
+    _selectedStatus = 'todo';
+    _selectedPriority = 'medium';
+    _selectedDueDate = null;
+    _selectedDueTime = null;
+    _reminderOffset = 'none';
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
