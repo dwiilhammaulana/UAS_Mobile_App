@@ -234,6 +234,71 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  Widget _buildProfileHeader() {
+  final user = supabase.auth.currentUser;
+  return StreamBuilder<List<Map<String, dynamic>>>(
+    stream: supabase.from('profiles').stream(primaryKey: ['id']).eq('id', user!.id),
+    builder: (context, snapshot) {
+      String name = user.email?.split('@')[0] ?? "User";
+      String? avatarUrl;
+
+      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+        name = snapshot.data![0]['full_name'] ?? name;
+        avatarUrl = snapshot.data![0]['avatar_url'];
+      }
+
+      return InkWell(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFC107).withOpacity(0.1),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: const Color(0xFFFFC107),
+                backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty)
+                    ? NetworkImage(avatarUrl)
+                    : NetworkImage(
+                        'https://ui-avatars.com/api/?name=$name&background=FFC107&color=fff',
+                      ),
+              ),
+              const SizedBox(width: 15),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Haii, selamat datang",
+                    style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                  ),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF111827),
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
