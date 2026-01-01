@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
   TimeOfDay? _selectedDueTime;
   String _reminderOffset = 'none';
 
+  late final Stream<List<Map<String, dynamic>>> _todoStream;
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
