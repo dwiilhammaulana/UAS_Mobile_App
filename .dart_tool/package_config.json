@@ -170,6 +170,42 @@
       "languageVersion": "3.9"
     },
     {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-5.9.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-2.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "gotrue",
       "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/gotrue-2.18.0",
       "packageUri": "lib/",
