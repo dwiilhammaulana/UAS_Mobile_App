@@ -14,4 +14,15 @@ class Todo {
     required this.status,
     required this.createdAt,
   });
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      id: json['id'],
+      userId: json['user_id'],
+      title: json['title'],
+      description: json['description'],
+      status: json['status'],
+      createdAt: DateTime.parse(json['created_at']),
+    );
+  }
 }
