@@ -65,14 +65,35 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Foto berhasil diunggah!")));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal upload: $e"), backgroundColor: Colors.red));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = supabase.auth.currentUser!;
+      await supabase.from('profiles').upsert({
+        'id': user.id,
+        'email': user.email,
+        'full_name': _fullNameController.text,
+        'username': _usernameController.text,
+        'avatar_url': _imageUrl,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Foto berhasil diunggah!")),
+        const SnackBar(content: Text("Profil berhasil disimpan!"), backgroundColor: Colors.green),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal upload: $e"), backgroundColor: Colors.red),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -106,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildTextField(_usernameController, "Username", Icons.alternate_email),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _updateProfile,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF111827),
                     foregroundColor: Colors.white,
