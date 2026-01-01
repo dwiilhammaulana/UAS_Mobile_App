@@ -146,6 +146,18 @@ class _AuthScreenState extends State<AuthScreen> {
                               prefixIcon: const Icon(Icons.email_outlined),
                             ),
                           ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              prefixIcon: const Icon(Icons.lock_outline),
+                            ),
+                          ),
                         ],
                       ),
                     ),
