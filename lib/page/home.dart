@@ -49,7 +49,11 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(width: 6),
                 Text(
                   title,
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                  ),
                 ),
               ],
             ),
@@ -57,7 +61,10 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 8),
           Text(
             count.toString(),
-            style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.grey[400],
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -85,7 +92,37 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: const Center(child: Text("Ready")),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _todoStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final todos = snapshot.data!;
+          final inProgress =
+              todos.where((t) => t['status'] == 'in_progress').toList();
+          final todoList = todos.where((t) => t['status'] == 'todo').toList();
+          final pending = todos.where((t) => t['status'] == 'pending').toList();
+          final completed =
+              todos.where((t) => t['status'] == 'completed').toList();
+
+          return ListView(
+            children: [
+              if (inProgress.isNotEmpty)
+                _buildSectionHeader(
+                    "IN PROGRESS", inProgress.length, Colors.deepPurple),
+              if (todoList.isNotEmpty)
+                _buildSectionHeader("TO DO", todoList.length, Colors.grey),
+              if (pending.isNotEmpty)
+                _buildSectionHeader("PENDING", pending.length, Colors.blue),
+              if (completed.isNotEmpty)
+                _buildSectionHeader("COMPLETED", completed.length, Colors.green),
+              const SizedBox(height: 100),
+            ],
+          );
+        },
+      ),
     );
   }
 }
