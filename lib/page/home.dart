@@ -331,6 +331,7 @@ class _HomePageState extends State<HomePage> {
 
           return ListView(
             children: [
+              _buildProfileHeader(),
               if (inProgress.isNotEmpty) ...[
                 _buildSectionHeader("IN PROGRESS", inProgress.length, Colors.deepPurple),
                 ...inProgress.map((e) => _buildTaskItem(e)),
