@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -42,6 +44,22 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _pickAndUploadImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+
+    if (image == null) return;
+
+    final file = File(image.path);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Gambar dipilih: ${file.path}")),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,11 +73,14 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: const EdgeInsets.all(24),
               children: [
                 Center(
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: (_imageUrl != null && _imageUrl!.isNotEmpty) ? NetworkImage(_imageUrl!) : null,
-                    child: (_imageUrl == null) ? const Icon(Icons.camera_alt, size: 40) : null,
+                  child: GestureDetector(
+                    onTap: _pickAndUploadImage,
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: (_imageUrl != null && _imageUrl!.isNotEmpty) ? NetworkImage(_imageUrl!) : null,
+                      child: (_imageUrl == null) ? const Icon(Icons.camera_alt, size: 40) : null,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
