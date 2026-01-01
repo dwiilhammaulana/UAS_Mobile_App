@@ -201,9 +201,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(height: 20),
                           Row(
                             children: [
-                              Expanded(
-                                child: Divider(color: Colors.grey),
-                              ),
+                              Expanded(child: Divider(color: Colors.grey)),
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
@@ -211,11 +209,44 @@ class _AuthScreenState extends State<AuthScreen> {
                                   style: TextStyle(fontSize: 12),
                                 ),
                               ),
-                              Expanded(
-                                child: Divider(color: Colors.grey),
-                              ),
+                              Expanded(child: Divider(color: Colors.grey)),
                             ],
                           ),
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: Colors.black12),
+                              ),
+                            ),
+                            onPressed: _loginWithGoogle,
+                            icon: const Icon(Icons.g_mobiledata, size: 30),
+                            label: const Text("Login dengan Google"),
+                          ),
+                          const SizedBox(height: 16),
+                          if (_message.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _message.contains("Berhasil")
+                                    ? Colors.green.shade50
+                                    : Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                _message,
+                                style: TextStyle(
+                                  color: _message.contains("Berhasil")
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
