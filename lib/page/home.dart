@@ -33,6 +33,18 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
+  Future<void> _saveTodo() async {
+    if (_titleController.text.isEmpty || _selectedDueDate == null || _selectedDueTime == null) return;
+
+    final DateTime fullDueDateTime = DateTime(
+      _selectedDueDate!.year,
+      _selectedDueDate!.month,
+      _selectedDueDate!.day,
+      _selectedDueTime!.hour,
+      _selectedDueTime!.minute,
+    );
+  }
+
   void _showAddSheet() {
     _titleController.clear();
     _descController.clear();
@@ -45,9 +57,7 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => Padding(
           padding: EdgeInsets.only(
@@ -60,14 +70,8 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(labelText: "Judul"),
-                ),
-                TextField(
-                  controller: _descController,
-                  decoration: const InputDecoration(labelText: "Keterangan"),
-                ),
+                TextField(controller: _titleController, decoration: const InputDecoration(labelText: "Judul")),
+                TextField(controller: _descController, decoration: const InputDecoration(labelText: "Keterangan")),
                 const SizedBox(height: 15),
                 Row(
                   children: [
@@ -75,10 +79,7 @@ class _HomePageState extends State<HomePage> {
                       child: DropdownButtonFormField<String>(
                         value: _selectedStatus,
                         items: ['todo', 'pending', 'in_progress', 'completed']
-                            .map((s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(s.toUpperCase()),
-                                ))
+                            .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))
                             .toList(),
                         onChanged: (v) => setModalState(() => _selectedStatus = v!),
                         decoration: const InputDecoration(labelText: "Status"),
@@ -89,10 +90,7 @@ class _HomePageState extends State<HomePage> {
                       child: DropdownButtonFormField<String>(
                         value: _selectedPriority,
                         items: ['low', 'medium', 'high']
-                            .map((p) => DropdownMenuItem(
-                                  value: p,
-                                  child: Text(p.toUpperCase()),
-                                ))
+                            .map((p) => DropdownMenuItem(value: p, child: Text(p.toUpperCase())))
                             .toList(),
                         onChanged: (v) => setModalState(() => _selectedPriority = v!),
                         decoration: const InputDecoration(labelText: "Prioritas"),
@@ -108,12 +106,7 @@ class _HomePageState extends State<HomePage> {
                     {'label': '1 Jam Sebelum', 'value': '1_hour'},
                     {'label': '3 Jam Sebelum', 'value': '3_hours'},
                     {'label': '1 Hari Sebelum', 'value': '1_day'},
-                  ]
-                      .map((item) => DropdownMenuItem(
-                            value: item['value'],
-                            child: Text(item['label']!),
-                          ))
-                      .toList(),
+                  ].map((item) => DropdownMenuItem(value: item['value'], child: Text(item['label']!))).toList(),
                   onChanged: (v) => setModalState(() => _reminderOffset = v!),
                 ),
                 Row(
@@ -121,11 +114,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          _selectedDueDate == null
-                              ? "Set Tanggal"
-                              : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
-                        ),
+                        title: Text(_selectedDueDate == null ? "Set Tanggal" : DateFormat('dd/MM/yyyy').format(_selectedDueDate!)),
                         trailing: const Icon(Icons.calendar_month),
                         onTap: () async {
                           final date = await showDatePicker(
@@ -134,33 +123,32 @@ class _HomePageState extends State<HomePage> {
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2100),
                           );
-                          if (date != null) {
-                            setModalState(() => _selectedDueDate = date);
-                          }
+                          if (date != null) setModalState(() => _selectedDueDate = date);
                         },
                       ),
                     ),
                     Expanded(
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          _selectedDueTime == null ? "Set Jam" : _selectedDueTime!.format(context),
-                        ),
+                        title: Text(_selectedDueTime == null ? "Set Jam" : _selectedDueTime!.format(context)),
                         trailing: const Icon(Icons.access_time),
                         onTap: () async {
-                          final time = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-                          if (time != null) {
-                            setModalState(() => _selectedDueTime = time);
-                          }
+                          final time = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                          if (time != null) setModalState(() => _selectedDueTime = time);
                         },
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _saveTodo,
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF111827), foregroundColor: Colors.white),
+                    child: const Text("SIMPAN TUGAS"),
+                  ),
+                ),
                 const SizedBox(height: 20),
               ],
             ),
@@ -177,14 +165,8 @@ class _HomePageState extends State<HomePage> {
             title: const Text("Hapus Tugas"),
             content: const Text("Yakin ingin menghapus tugas ini?"),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text("BATAL"),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text("HAPUS", style: TextStyle(color: Colors.red)),
-              ),
+              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("BATAL")),
+              TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("HAPUS", style: TextStyle(color: Colors.red))),
             ],
           ),
         ) ??
@@ -208,35 +190,29 @@ class _HomePageState extends State<HomePage> {
   Widget _buildSectionHeader(String title, int count, Color color) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withOpacity(0.3)),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.circle, size: 8, color: color),
-                const SizedBox(width: 6),
-                Text(title, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11)),
-              ],
-            ),
+      child: Row(children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: color.withOpacity(0.3)),
           ),
-          const SizedBox(width: 8),
-          Text(count.toString(), style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold)),
-        ],
-      ),
+          child: Row(children: [
+            Icon(Icons.circle, size: 8, color: color),
+            const SizedBox(width: 6),
+            Text(title, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11)),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        Text(count.toString(), style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold)),
+      ]),
     );
   }
 
   Widget _buildTaskItem(Map<String, dynamic> item) {
-    final bool isCompleted = item['status'] == 'completed';
-    final Color flagColor = item['priority'] == 'high'
-        ? Colors.red
-        : (item['priority'] == 'medium' ? Colors.amber : Colors.grey);
+    bool isCompleted = item['status'] == 'completed';
+    Color flagColor = item['priority'] == 'high' ? Colors.red : (item['priority'] == 'medium' ? Colors.amber : Colors.grey);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -291,19 +267,19 @@ class _HomePageState extends State<HomePage> {
             children: [
               if (inProgress.isNotEmpty) ...[
                 _buildSectionHeader("IN PROGRESS", inProgress.length, Colors.deepPurple),
-                ...inProgress.map(_buildTaskItem),
+                ...inProgress.map((e) => _buildTaskItem(e)),
               ],
               if (todoList.isNotEmpty) ...[
                 _buildSectionHeader("TO DO", todoList.length, Colors.grey),
-                ...todoList.map(_buildTaskItem),
+                ...todoList.map((e) => _buildTaskItem(e)),
               ],
               if (pending.isNotEmpty) ...[
                 _buildSectionHeader("PENDING", pending.length, Colors.blue),
-                ...pending.map(_buildTaskItem),
+                ...pending.map((e) => _buildTaskItem(e)),
               ],
               if (completed.isNotEmpty) ...[
                 _buildSectionHeader("COMPLETED", completed.length, Colors.green),
-                ...completed.map(_buildTaskItem),
+                ...completed.map((e) => _buildTaskItem(e)),
               ],
               const SizedBox(height: 100),
             ],
