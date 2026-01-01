@@ -11,6 +11,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final supabase = Supabase.instance.client;
 
+  final _titleController = TextEditingController();
+  final _descController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
