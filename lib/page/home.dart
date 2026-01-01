@@ -32,6 +32,43 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
+  Future<void> _deleteTodo(String id) async {
+    bool confirm = await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Hapus Tugas"),
+            content: const Text("Yakin ingin menghapus tugas ini?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("BATAL"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  "HAPUS",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (confirm) {
+      try {
+        await supabase.from('todos').delete().eq('id', id);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Terhapus")),
+          );
+        }
+      } catch (e) {
+        debugPrint("Error hapus: $e");
+      }
+    }
+  }
+
   Future<void> _toggleStatus(String id, String currentStatus) async {
     final String newStatus = currentStatus == 'completed' ? 'todo' : 'completed';
     await supabase.from('todos').update({'status': newStatus}).eq('id', id);
@@ -93,6 +130,7 @@ class _HomePageState extends State<HomePage> {
           context,
           MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
         ),
+        onLongPress: () => _deleteTodo(item['id']),
         contentPadding: EdgeInsets.zero,
         leading: IconButton(
           icon: Icon(
