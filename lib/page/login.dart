@@ -105,9 +105,9 @@ class _AuthScreenState extends State<AuthScreen> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Column(
-                  children: const [
-                    SizedBox(height: 40),
-                    Text(
+                  children: [
+                    const SizedBox(height: 40),
+                    const Text(
                       "Welcome Back",
                       style: TextStyle(
                         color: Colors.white,
@@ -115,10 +115,26 @@ class _AuthScreenState extends State<AuthScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       "Login untuk melanjutkan",
                       style: TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 40),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: const SizedBox.shrink(),
                     ),
                   ],
                 ),
