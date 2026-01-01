@@ -79,6 +79,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildTaskItem(Map<String, dynamic> item) {
     final bool isCompleted = item['status'] == 'completed';
+    final Color flagColor = item['priority'] == 'high'
+        ? Colors.red
+        : (item['priority'] == 'medium' ? Colors.amber : Colors.grey);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -105,6 +108,7 @@ class _HomePageState extends State<HomePage> {
             color: isCompleted ? Colors.grey : Colors.black87,
           ),
         ),
+        trailing: Icon(Icons.flag, color: flagColor, size: 18),
       ),
     );
   }
