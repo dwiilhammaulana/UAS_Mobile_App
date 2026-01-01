@@ -56,6 +56,18 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  Future<void> _loginWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return;
+    } catch (e) {
+      setState(() {
+        _message = "Google Login Gagal: $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
