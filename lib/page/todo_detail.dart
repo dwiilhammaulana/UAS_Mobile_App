@@ -93,8 +93,62 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
                 ),
         ],
       ),
-      body: const Center(
-        child: Text("Todo Detail Page"),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          TextField(
+            controller: _titleController,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            decoration: const InputDecoration(
+              labelText: "Judul Tugas",
+              border: UnderlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Keterangan",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+          ),
+          TextField(
+            controller: _descController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: "Tambahkan keterangan...",
+              border: InputBorder.none,
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Catatan Tambahan",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextField(
+              controller: _notesController,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: "Catatan tambahan di sini...",
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+          ElevatedButton.icon(
+            onPressed: _isLoading ? null : _updateTodo,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF111827),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 50),
+            ),
+            icon: const Icon(Icons.save),
+            label: const Text("SIMPAN PERUBAHAN"),
+          ),
+        ],
       ),
     );
   }
