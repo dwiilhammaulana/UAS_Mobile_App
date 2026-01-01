@@ -94,8 +94,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(p.toUpperCase()),
                                 ))
                             .toList(),
-                        onChanged: (v) =>
-                            setModalState(() => _selectedPriority = v!),
+                        onChanged: (v) => setModalState(() => _selectedPriority = v!),
                         decoration: const InputDecoration(labelText: "Prioritas"),
                       ),
                     ),
@@ -117,6 +116,51 @@ class _HomePageState extends State<HomePage> {
                       .toList(),
                   onChanged: (v) => setModalState(() => _reminderOffset = v!),
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          _selectedDueDate == null
+                              ? "Set Tanggal"
+                              : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
+                        ),
+                        trailing: const Icon(Icons.calendar_month),
+                        onTap: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2100),
+                          );
+                          if (date != null) {
+                            setModalState(() => _selectedDueDate = date);
+                          }
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          _selectedDueTime == null ? "Set Jam" : _selectedDueTime!.format(context),
+                        ),
+                        trailing: const Icon(Icons.access_time),
+                        onTap: () async {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (time != null) {
+                            setModalState(() => _selectedDueTime = time);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
                 const SizedBox(height: 20),
               ],
             ),
@@ -139,10 +183,7 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text(
-                  "HAPUS",
-                  style: TextStyle(color: Colors.red),
-                ),
+                child: const Text("HAPUS", style: TextStyle(color: Colors.red)),
               ),
             ],
           ),
@@ -152,11 +193,7 @@ class _HomePageState extends State<HomePage> {
     if (confirm) {
       try {
         await supabase.from('todos').delete().eq('id', id);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Terhapus")),
-          );
-        }
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Terhapus")));
       } catch (e) {
         debugPrint("Error hapus: $e");
       }
@@ -184,18 +221,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Icon(Icons.circle, size: 8, color: color),
                 const SizedBox(width: 6),
-                Text(
-                  title,
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
-                ),
+                Text(title, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11)),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          Text(
-            count.toString(),
-            style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold),
-          ),
+          Text(count.toString(), style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -209,29 +240,18 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
-      ),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[100]!))),
       child: ListTile(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
-        ),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item))),
         onLongPress: () => _deleteTodo(item['id']),
         contentPadding: EdgeInsets.zero,
         leading: IconButton(
-          icon: Icon(
-            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: isCompleted ? Colors.green : Colors.grey[300],
-          ),
+          icon: Icon(isCompleted ? Icons.check_circle : Icons.radio_button_unchecked, color: isCompleted ? Colors.green : Colors.grey[300]),
           onPressed: () => _toggleStatus(item['id'], item['status']),
         ),
         title: Text(
           item['title'] ?? '',
-          style: TextStyle(
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-            color: isCompleted ? Colors.grey : Colors.black87,
-          ),
+          style: TextStyle(decoration: isCompleted ? TextDecoration.lineThrough : null, color: isCompleted ? Colors.grey : Colors.black87),
         ),
         trailing: Icon(Icons.flag, color: flagColor, size: 18),
       ),
