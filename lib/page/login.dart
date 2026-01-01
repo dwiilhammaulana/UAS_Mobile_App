@@ -25,6 +25,22 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  Future<void> _register() async {
+    try {
+      await supabase.auth.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      setState(() {
+        _message = "Register Berhasil! Silakan cek email konfirmasi Anda.";
+      });
+    } catch (e) {
+      setState(() {
+        _message = "Register Gagal: ${e.toString()}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
