@@ -14,6 +14,15 @@ class TodoDetailPage extends StatefulWidget {
 class _TodoDetailPageState extends State<TodoDetailPage> {
   final supabase = Supabase.instance.client;
 
+  late TextEditingController _titleController;
+  late TextEditingController _descController;
+  late TextEditingController _notesController;
+
+  late String _selectedStatus;
+  late String _selectedPriority;
+  DateTime? _selectedDueDate;
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
