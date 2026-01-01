@@ -24,6 +24,20 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.todo['title']);
+    _descController = TextEditingController(text: widget.todo['description']);
+    _notesController = TextEditingController(text: widget.todo['notes']);
+    _selectedStatus = widget.todo['status'] ?? 'todo';
+    _selectedPriority = widget.todo['priority'] ?? 'medium';
+
+    if (widget.todo['due_date'] != null) {
+      _selectedDueDate = DateTime.parse(widget.todo['due_date']);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
