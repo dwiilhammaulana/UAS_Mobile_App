@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:testing_2/page/todo_detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -71,6 +72,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildTaskItem(Map<String, dynamic> item) {
+    return ListTile(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
+      ),
+      title: Text(item['title'] ?? ''),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,15 +120,23 @@ class _HomePageState extends State<HomePage> {
 
           return ListView(
             children: [
-              if (inProgress.isNotEmpty)
+              if (inProgress.isNotEmpty) ...[
                 _buildSectionHeader(
                     "IN PROGRESS", inProgress.length, Colors.deepPurple),
-              if (todoList.isNotEmpty)
+                ...inProgress.map(_buildTaskItem),
+              ],
+              if (todoList.isNotEmpty) ...[
                 _buildSectionHeader("TO DO", todoList.length, Colors.grey),
-              if (pending.isNotEmpty)
+                ...todoList.map(_buildTaskItem),
+              ],
+              if (pending.isNotEmpty) ...[
                 _buildSectionHeader("PENDING", pending.length, Colors.blue),
-              if (completed.isNotEmpty)
+                ...pending.map(_buildTaskItem),
+              ],
+              if (completed.isNotEmpty) ...[
                 _buildSectionHeader("COMPLETED", completed.length, Colors.green),
+                ...completed.map(_buildTaskItem),
+              ],
               const SizedBox(height: 100),
             ],
           );
