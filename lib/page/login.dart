@@ -11,10 +11,20 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String _message = "";
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Auth Screen")),
+    return Scaffold(
+      body: Column(
+        children: [
+          TextField(controller: _emailController),
+          TextField(controller: _passwordController),
+          if (_message.isNotEmpty) Text(_message),
+        ],
+      ),
     );
   }
 }
