@@ -14,6 +14,12 @@ class _HomePageState extends State<HomePage> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
 
+  String _selectedStatus = 'todo';
+  String _selectedPriority = 'medium';
+  DateTime? _selectedDueDate;
+  TimeOfDay? _selectedDueTime;
+  String _reminderOffset = 'none';
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
