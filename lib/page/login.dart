@@ -92,10 +92,13 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: const Color(0xFFFFC107),
       body: Stack(
         children: [
-          Container(
-            height: 280,
-            width: double.infinity,
-            color: const Color(0xFF111827),
+          ClipPath(
+            clipper: TopCurveClipper(),
+            child: Container(
+              height: 280,
+              width: double.infinity,
+              color: const Color(0xFF111827),
+            ),
           ),
           SafeArea(
             child: Center(
