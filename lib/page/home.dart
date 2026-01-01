@@ -31,6 +31,39 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
+  Widget _buildSectionHeader(String title, int count, Color color) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.circle, size: 8, color: color),
+                const SizedBox(width: 6),
+                Text(
+                  title,
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            count.toString(),
+            style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,30 +85,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: _todoStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final todos = snapshot.data!;
-          final todoList = todos.where((t) => t['status'] == 'todo').toList();
-          final pending = todos.where((t) => t['status'] == 'pending').toList();
-          final inProgress = todos.where((t) => t['status'] == 'in_progress').toList();
-          final completed = todos.where((t) => t['status'] == 'completed').toList();
-
-          return ListView(
-            children: [
-              if (todoList.isNotEmpty) Text("TODO (${todoList.length})"),
-              if (pending.isNotEmpty) Text("PENDING (${pending.length})"),
-              if (inProgress.isNotEmpty) Text("IN PROGRESS (${inProgress.length})"),
-              if (completed.isNotEmpty) Text("COMPLETED (${completed.length})"),
-              const SizedBox(height: 100),
-            ],
-          );
-        },
-      ),
+      body: const Center(child: Text("Ready")),
     );
   }
 }
