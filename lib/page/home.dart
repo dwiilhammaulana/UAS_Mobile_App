@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
-
+import 'package:uas_mobile_app/page/profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
