@@ -13,6 +13,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final _fullNameController = TextEditingController();
   final _usernameController = TextEditingController();
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,23 +22,25 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text("Edit Profil"),
         backgroundColor: const Color(0xFFFFC107),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          _buildTextField(_fullNameController, "Nama Lengkap", Icons.person),
-          _buildTextField(_usernameController, "Username", Icons.alternate_email),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF111827),
-              foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 55),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                _buildTextField(_fullNameController, "Nama Lengkap", Icons.person),
+                _buildTextField(_usernameController, "Username", Icons.alternate_email),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF111827),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 55),
+                  ),
+                  child: const Text("SIMPAN PERUBAHAN"),
+                ),
+              ],
             ),
-            child: const Text("SIMPAN PERUBAHAN"),
-          ),
-        ],
-      ),
     );
   }
 
