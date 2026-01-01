@@ -71,6 +71,14 @@ class _AuthScreenState extends State<AuthScreen> {
       if (idToken == null || accessToken == null) {
         throw 'Gagal mendapatkan token dari Google';
       }
+
+      await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+
+      _navigateToHome();
     } catch (e) {
       setState(() {
         _message = "Google Login Gagal: $e";
