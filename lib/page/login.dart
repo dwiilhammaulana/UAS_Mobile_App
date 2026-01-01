@@ -88,8 +88,22 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Auth")),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFC107),
+      body: Stack(
+        children: [
+          Container(
+            height: 280,
+            width: double.infinity,
+            color: const Color(0xFF111827),
+          ),
+          const SafeArea(
+            child: Center(
+              child: Text("Auth"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
