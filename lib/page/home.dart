@@ -32,6 +32,20 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
+  void _showAddSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => const SizedBox(
+        height: 200,
+        child: Center(child: Text("Form tambah tugas")),
+      ),
+    );
+  }
+
   Future<void> _deleteTodo(String id) async {
     bool confirm = await showDialog(
           context: context,
@@ -210,6 +224,11 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFFFFC107),
+        child: const Icon(Icons.add, color: Colors.black, size: 30),
+        onPressed: () => _showAddSheet(),
       ),
     );
   }
