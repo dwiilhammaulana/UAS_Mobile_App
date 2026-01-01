@@ -58,7 +58,22 @@ class _HomePageState extends State<HomePage> {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          return const Center(child: Text("Data Loaded"));
+
+          final todos = snapshot.data!;
+          final todoList = todos.where((t) => t['status'] == 'todo').toList();
+          final pending = todos.where((t) => t['status'] == 'pending').toList();
+          final inProgress = todos.where((t) => t['status'] == 'in_progress').toList();
+          final completed = todos.where((t) => t['status'] == 'completed').toList();
+
+          return ListView(
+            children: [
+              if (todoList.isNotEmpty) Text("TODO (${todoList.length})"),
+              if (pending.isNotEmpty) Text("PENDING (${pending.length})"),
+              if (inProgress.isNotEmpty) Text("IN PROGRESS (${inProgress.length})"),
+              if (completed.isNotEmpty) Text("COMPLETED (${completed.length})"),
+              const SizedBox(height: 100),
+            ],
+          );
         },
       ),
     );
