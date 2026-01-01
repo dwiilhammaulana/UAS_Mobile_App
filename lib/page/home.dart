@@ -67,6 +67,43 @@ class _HomePageState extends State<HomePage> {
                   controller: _descController,
                   decoration: const InputDecoration(labelText: "Keterangan"),
                 ),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedStatus,
+                        items: ['todo', 'pending', 'in_progress', 'completed']
+                            .map(
+                              (s) => DropdownMenuItem(
+                                value: s,
+                                child: Text(s.toUpperCase()),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) => setModalState(() => _selectedStatus = v!),
+                        decoration: const InputDecoration(labelText: "Status"),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedPriority,
+                        items: ['low', 'medium', 'high']
+                            .map(
+                              (p) => DropdownMenuItem(
+                                value: p,
+                                child: Text(p.toUpperCase()),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) =>
+                            setModalState(() => _selectedPriority = v!),
+                        decoration: const InputDecoration(labelText: "Prioritas"),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 20),
               ],
             ),
