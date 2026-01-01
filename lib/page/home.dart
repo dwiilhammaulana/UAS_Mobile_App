@@ -33,8 +33,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Home")),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          "Task Manager",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFFFC107),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            onPressed: () async {
+              await supabase.auth.signOut();
+              if (mounted) Navigator.pushReplacementNamed(context, '/');
+            },
+          )
+        ],
+      ),
+      body: const Center(child: Text("Home")),
     );
   }
 }
