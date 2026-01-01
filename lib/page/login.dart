@@ -60,7 +60,17 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
       if (googleUser == null) return;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null || accessToken == null) {
+        throw 'Gagal mendapatkan token dari Google';
+      }
     } catch (e) {
       setState(() {
         _message = "Google Login Gagal: $e";
