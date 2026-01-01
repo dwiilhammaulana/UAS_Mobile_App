@@ -32,6 +32,11 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
+  Future<void> _toggleStatus(String id, String currentStatus) async {
+    final String newStatus = currentStatus == 'completed' ? 'todo' : 'completed';
+    await supabase.from('todos').update({'status': newStatus}).eq('id', id);
+  }
+
   Widget _buildSectionHeader(String title, int count, Color color) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
@@ -73,10 +78,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTaskItem(Map<String, dynamic> item) {
+    final bool isCompleted = item['status'] == 'completed';
+
     return ListTile(
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
+      ),
+      leading: IconButton(
+        icon: Icon(
+          isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+        ),
+        onPressed: () => _toggleStatus(item['id'], item['status']),
       ),
       title: Text(item['title'] ?? ''),
     );
