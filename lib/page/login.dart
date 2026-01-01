@@ -198,6 +198,24 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(color: Colors.grey),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  "atau",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(color: Colors.grey),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
