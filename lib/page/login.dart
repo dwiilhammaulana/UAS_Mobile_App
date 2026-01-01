@@ -97,9 +97,29 @@ class _AuthScreenState extends State<AuthScreen> {
             width: double.infinity,
             color: const Color(0xFF111827),
           ),
-          const SafeArea(
+          SafeArea(
             child: Center(
-              child: Text("Auth"),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: const [
+                    SizedBox(height: 40),
+                    Text(
+                      "Welcome Back",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Login untuk melanjutkan",
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
