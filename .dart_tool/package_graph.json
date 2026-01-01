@@ -12,6 +12,7 @@
         "flutter",
         "google_fonts",
         "google_sign_in",
+        "intl",
         "supabase_flutter"
       ],
       "devDependencies": [
@@ -42,6 +43,15 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.20.2",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
       ]
     },
     {
