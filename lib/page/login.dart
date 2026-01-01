@@ -27,4 +27,11 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 }
