@@ -59,19 +59,13 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Data berhasil diperbarui!"),
-          backgroundColor: Colors.green,
-        ),
+        const SnackBar(content: Text("Data berhasil diperbarui!"), backgroundColor: Colors.green),
       );
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Gagal update: $e"),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text("Gagal update: $e"), backgroundColor: Colors.red),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -83,6 +77,21 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Task Detail"),
+        backgroundColor: const Color(0xFF111827),
+        foregroundColor: Colors.white,
+        actions: [
+          _isLoading
+              ? const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+                )
+              : IconButton(
+                  onPressed: _updateTodo,
+                  icon: const Icon(Icons.save_as_rounded, size: 28),
+                ),
+        ],
       ),
       body: const Center(
         child: Text("Todo Detail Page"),
