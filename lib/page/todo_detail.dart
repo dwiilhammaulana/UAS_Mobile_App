@@ -114,10 +114,7 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
           TextField(
             controller: _titleController,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            decoration: const InputDecoration(
-              labelText: "Judul Tugas",
-              border: UnderlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: "Judul Tugas", border: UnderlineInputBorder()),
           ),
           const SizedBox(height: 20),
           Row(
@@ -158,36 +155,40 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
             ],
           ),
           const SizedBox(height: 25),
-          const Text(
-            "Keterangan",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.calendar_month, color: Colors.blueGrey),
+            title: const Text("Deadline", style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(
+              _selectedDueDate == null ? "-" : DateFormat('dd MMMM yyyy').format(_selectedDueDate!),
+            ),
+            trailing: const Icon(Icons.edit, size: 20),
+            onTap: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: _selectedDueDate ?? DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+              );
+              if (date != null) setState(() => _selectedDueDate = date);
+            },
           ),
+          const Divider(height: 30),
+          const Text("Keterangan", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           TextField(
             controller: _descController,
             maxLines: 3,
-            decoration: const InputDecoration(
-              hintText: "Tambahkan keterangan...",
-              border: InputBorder.none,
-            ),
+            decoration: const InputDecoration(hintText: "Tambahkan keterangan...", border: InputBorder.none),
           ),
           const SizedBox(height: 20),
-          const Text(
-            "Catatan Tambahan",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
-          ),
+          const Text("Catatan Tambahan", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey)),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
+            decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
             child: TextField(
               controller: _notesController,
               maxLines: 4,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Catatan tambahan di sini...",
-              ),
+              decoration: const InputDecoration(border: InputBorder.none, hintText: "Catatan tambahan di sini..."),
             ),
           ),
           const SizedBox(height: 40),
