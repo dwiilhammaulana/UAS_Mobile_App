@@ -41,6 +41,20 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  Future<void> _login() async {
+    try {
+      await supabase.auth.signInWithPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      _navigateToHome();
+    } catch (e) {
+      setState(() {
+        _message = "Login Gagal: ${e.toString()}";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
