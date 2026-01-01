@@ -13,6 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _fullNameController = TextEditingController();
   final _usernameController = TextEditingController();
 
+  String? _imageUrl;
   bool _isLoading = false;
 
   @override
@@ -30,6 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
       if (data != null) {
         _fullNameController.text = data['full_name'] ?? '';
         _usernameController.text = data['username'] ?? '';
+        setState(() {
+          _imageUrl = data['avatar_url'];
+        });
       }
     } catch (e) {
       debugPrint("Error: $e");
@@ -50,6 +54,15 @@ class _ProfilePageState extends State<ProfilePage> {
           : ListView(
               padding: const EdgeInsets.all(24),
               children: [
+                Center(
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: (_imageUrl != null && _imageUrl!.isNotEmpty) ? NetworkImage(_imageUrl!) : null,
+                    child: (_imageUrl == null) ? const Icon(Icons.camera_alt, size: 40) : null,
+                  ),
+                ),
+                const SizedBox(height: 30),
                 _buildTextField(_fullNameController, "Nama Lengkap", Icons.person),
                 _buildTextField(_usernameController, "Username", Icons.alternate_email),
                 const SizedBox(height: 40),
