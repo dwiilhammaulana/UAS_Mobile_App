@@ -80,18 +80,32 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTaskItem(Map<String, dynamic> item) {
     final bool isCompleted = item['status'] == 'completed';
 
-    return ListTile(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
       ),
-      leading: IconButton(
-        icon: Icon(
-          isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+      child: ListTile(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
         ),
-        onPressed: () => _toggleStatus(item['id'], item['status']),
+        contentPadding: EdgeInsets.zero,
+        leading: IconButton(
+          icon: Icon(
+            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: isCompleted ? Colors.green : Colors.grey[300],
+          ),
+          onPressed: () => _toggleStatus(item['id'], item['status']),
+        ),
+        title: Text(
+          item['title'] ?? '',
+          style: TextStyle(
+            decoration: isCompleted ? TextDecoration.lineThrough : null,
+            color: isCompleted ? Colors.grey : Colors.black87,
+          ),
+        ),
       ),
-      title: Text(item['title'] ?? ''),
     );
   }
 
