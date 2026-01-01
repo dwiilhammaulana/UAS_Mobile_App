@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -8,6 +9,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final supabase = Supabase.instance.client;
+  final _fullNameController = TextEditingController();
+  final _usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
