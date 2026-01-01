@@ -52,7 +52,15 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: const Center(child: Text("Home")),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _todoStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return const Center(child: Text("Data Loaded"));
+        },
+      ),
     );
   }
 }
