@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:testing_2/page/todo_detail.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,12 +75,10 @@ class _HomePageState extends State<HomePage> {
                       child: DropdownButtonFormField<String>(
                         value: _selectedStatus,
                         items: ['todo', 'pending', 'in_progress', 'completed']
-                            .map(
-                              (s) => DropdownMenuItem(
-                                value: s,
-                                child: Text(s.toUpperCase()),
-                              ),
-                            )
+                            .map((s) => DropdownMenuItem(
+                                  value: s,
+                                  child: Text(s.toUpperCase()),
+                                ))
                             .toList(),
                         onChanged: (v) => setModalState(() => _selectedStatus = v!),
                         decoration: const InputDecoration(labelText: "Status"),
@@ -90,12 +89,10 @@ class _HomePageState extends State<HomePage> {
                       child: DropdownButtonFormField<String>(
                         value: _selectedPriority,
                         items: ['low', 'medium', 'high']
-                            .map(
-                              (p) => DropdownMenuItem(
-                                value: p,
-                                child: Text(p.toUpperCase()),
-                              ),
-                            )
+                            .map((p) => DropdownMenuItem(
+                                  value: p,
+                                  child: Text(p.toUpperCase()),
+                                ))
                             .toList(),
                         onChanged: (v) =>
                             setModalState(() => _selectedPriority = v!),
@@ -103,6 +100,22 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ],
+                ),
+                DropdownButtonFormField<String>(
+                  value: _reminderOffset,
+                  decoration: const InputDecoration(labelText: "Ingatkan Saya"),
+                  items: [
+                    {'label': 'Tanpa Pengingat', 'value': 'none'},
+                    {'label': '1 Jam Sebelum', 'value': '1_hour'},
+                    {'label': '3 Jam Sebelum', 'value': '3_hours'},
+                    {'label': '1 Hari Sebelum', 'value': '1_day'},
+                  ]
+                      .map((item) => DropdownMenuItem(
+                            value: item['value'],
+                            child: Text(item['label']!),
+                          ))
+                      .toList(),
+                  onChanged: (v) => setModalState(() => _reminderOffset = v!),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -173,11 +186,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(width: 6),
                 Text(
                   title,
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                  ),
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 11),
                 ),
               ],
             ),
@@ -185,10 +194,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 8),
           Text(
             count.toString(),
-            style: TextStyle(
-              color: Colors.grey[400],
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -237,10 +243,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Task Manager",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        title: const Text("Task Manager", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFFFFC107),
         elevation: 0,
         actions: [
@@ -256,23 +259,18 @@ class _HomePageState extends State<HomePage> {
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _todoStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
 
           final todos = snapshot.data!;
-          final inProgress =
-              todos.where((t) => t['status'] == 'in_progress').toList();
+          final inProgress = todos.where((t) => t['status'] == 'in_progress').toList();
           final todoList = todos.where((t) => t['status'] == 'todo').toList();
           final pending = todos.where((t) => t['status'] == 'pending').toList();
-          final completed =
-              todos.where((t) => t['status'] == 'completed').toList();
+          final completed = todos.where((t) => t['status'] == 'completed').toList();
 
           return ListView(
             children: [
               if (inProgress.isNotEmpty) ...[
-                _buildSectionHeader(
-                    "IN PROGRESS", inProgress.length, Colors.deepPurple),
+                _buildSectionHeader("IN PROGRESS", inProgress.length, Colors.deepPurple),
                 ...inProgress.map(_buildTaskItem),
               ],
               if (todoList.isNotEmpty) ...[
