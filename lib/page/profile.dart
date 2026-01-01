@@ -46,18 +46,36 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _pickAndUploadImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-    );
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
 
     if (image == null) return;
 
-    final file = File(image.path);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Gambar dipilih: ${file.path}")),
-    );
+    setState(() => _isLoading = true);
+    try {
+      final file = File(image.path);
+      final userId = supabase.auth.currentUser!.id;
+      final fileName = '$userId-${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      await supabase.storage.from('todo-image').upload(fileName, file);
+
+      final String publicUrl = supabase.storage.from('todo-image').getPublicUrl(fileName);
+
+      setState(() {
+        _imageUrl = publicUrl;
+      });
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Foto berhasil diunggah!")),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gagal upload: $e"), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
