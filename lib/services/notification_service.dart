@@ -8,6 +8,10 @@ class NotificationService {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission();
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {}
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      String? token = await messaging.getToken();
+
+      if (token != null) {}
+    }
   }
 }
