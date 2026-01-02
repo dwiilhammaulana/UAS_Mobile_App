@@ -6,5 +6,8 @@ class NotificationService {
 
   Future<void> initNotification() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission();
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {}
   }
 }
