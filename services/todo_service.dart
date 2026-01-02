@@ -13,4 +13,14 @@ class TodoService {
     final data = response as List;
     return data.map((e) => Todo.fromJson(e)).toList();
   }
+
+  Future<void> addTodo(String title, String description) async {
+    final user = supabase.auth.currentUser;
+    await supabase.from('todos').insert({
+      'user_id': user?.id,
+      'title': title,
+      'description': description,
+      'status': 'pending',
+    });
+  }
 }
