@@ -3,4 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationService {
   final supabase = Supabase.instance.client;
+
+  Future<void> initNotification() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+  }
 }
