@@ -16,10 +16,14 @@ class TodoService {
 
   Future<void> addTodo(String title, String description) async {
     final user = supabase.auth.currentUser;
+    if (user == null) {
+      throw Exception("User belum login");
+    }
+
     await supabase.from('todos').insert({
-      'user_id': user?.id,
-      'title': title,
-      'description': description,
+      'user_id': user.id,
+      'title': title.trim(),
+      'description': description.trim(),
       'status': 'pending',
     });
   }
