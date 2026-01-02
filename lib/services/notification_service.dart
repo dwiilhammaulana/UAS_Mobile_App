@@ -11,7 +11,20 @@ class NotificationService {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       String? token = await messaging.getToken();
 
-      if (token != null) {}
+      if (token != null) {
+        await _saveTokenToDatabase(token);
+      }
     }
+  }
+
+  Future<void> _saveTokenToDatabase(String token) async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    await supabase.from('firebase_tokens').upsert({
+      'user_id': userId,
+      'fcm_token': token,
+      'updated_at': DateTime.now().toIso8601String(),
+    });
   }
 }
