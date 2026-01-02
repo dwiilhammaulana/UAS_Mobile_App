@@ -1,15 +1,16 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../lib/models/todo_model.dart';
+import '../models/todo_model.dart';
 
 class TodoService {
   final supabase = Supabase.instance.client;
 
-  Future<List<dynamic>> fetchTodosRaw() async {
+  Future<List<Todo>> fetchTodos() async {
     final response = await supabase
         .from('todos')
         .select()
         .order('created_at', ascending: false);
 
-    return response as List<dynamic>;
+    final data = response as List;
+    return data.map((e) => Todo.fromJson(e)).toList();
   }
 }
