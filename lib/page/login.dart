@@ -15,74 +15,98 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   String _message = "";
+  bool _isLoading = false;
 
   void _navigateToHome() {
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    }
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
   }
 
   Future<void> _register() async {
+    setState(() {
+      _isLoading = true;
+      _message = "";
+    });
+
     try {
       await supabase.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
       setState(() {
-        _message = "Register Berhasil! Silakan cek email konfirmasi Anda.";
+        _message = "Registrasi berhasil. Cek email untuk verifikasi.";
       });
     } catch (e) {
       setState(() {
-        _message = "Register Gagal: ${e.toString()}";
+        _message = "Registrasi gagal";
       });
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+      _message = "";
+    });
+
     try {
       await supabase.auth.signInWithPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
       _navigateToHome();
     } catch (e) {
       setState(() {
-        _message = "Login Gagal: ${e.toString()}";
+        _message = "Email atau password salah";
       });
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _loginWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _message = "";
+    });
+
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signIn();
 
-      if (googleUser == null) return;
+      if (googleUser == null) {
+        setState(() => _message = "Login dibatalkan");
+        return;
+      }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final accessToken = googleAuth.accessToken;
-      final idToken = googleAuth.idToken;
+      final googleAuth = await googleUser.authentication;
 
-      if (idToken == null || accessToken == null) {
-        throw 'Gagal mendapatkan token dari Google';
+      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
+        throw Exception("Token Google tidak valid");
       }
 
       await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
-        idToken: idToken,
-        accessToken: accessToken,
+        idToken: googleAuth.idToken!,
+        accessToken: googleAuth.accessToken!,
       );
 
       _navigateToHome();
     } catch (e) {
       setState(() {
-        _message = "Google Login Gagal: $e";
+        _message = "Login Google gagal";
       });
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -163,89 +187,32 @@ class _AuthScreenState extends State<AuthScreen> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  onPressed: _login,
-                                  child: const Text("Login"),
+                                  onPressed: _isLoading ? null : _login,
+                                  child: _isLoading
+                                      ? const CircularProgressIndicator(color: Colors.white)
+                                      : const Text("Login"),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    side: const BorderSide(color: Colors.grey),
-                                  ),
-                                  onPressed: _register,
-                                  child: const Text(
-                                    "Register",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
+                                  onPressed: _isLoading ? null : _register,
+                                  child: const Text("Register"),
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Expanded(child: Divider(color: Colors.grey)),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  "atau",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                              Expanded(child: Divider(color: Colors.grey)),
                             ],
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                              minimumSize: const Size(double.infinity, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: const BorderSide(color: Colors.black12),
-                              ),
-                            ),
-                            onPressed: _loginWithGoogle,
+                            onPressed: _isLoading ? null : _loginWithGoogle,
                             icon: const Icon(Icons.g_mobiledata, size: 30),
                             label: const Text("Login dengan Google"),
                           ),
                           const SizedBox(height: 16),
                           if (_message.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: _message.contains("Berhasil")
-                                    ? Colors.green.shade50
-                                    : Colors.red.shade50,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                _message,
-                                style: TextStyle(
-                                  color: _message.contains("Berhasil")
-                                      ? Colors.green
-                                      : Colors.red,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                            Text(
+                              _message,
+                              style: const TextStyle(color: Colors.red),
                             ),
                         ],
                       ),
