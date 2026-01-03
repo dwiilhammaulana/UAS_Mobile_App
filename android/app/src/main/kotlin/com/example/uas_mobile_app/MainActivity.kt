@@ -1,4 +1,4 @@
-package com.example.uas_mobile_app
+package com.company.uas
 
 import io.flutter.embedding.android.FlutterActivity
 
