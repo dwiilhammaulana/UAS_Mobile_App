@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:uas_mobile_app/page/intro.dart';
-// import 'package:testing_2/page/intro.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
 
   await Supabase.initialize(
     url: 'https://freneyxlkefpyooynhee.supabase.co',
@@ -14,7 +16,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-// Biar aman: akses client lewat getter (dipakai setelah initialize selesai)
 SupabaseClient get supabase => Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
