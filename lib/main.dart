@@ -20,14 +20,13 @@ const AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  debugPrint("BG message: ${message.messageId}");
 }
 
 Future<void> _openTodoById(String? todoId) async {
   if (todoId == null || todoId.isEmpty) return;
 
-  // penting: tunggu app/route siap (biar tidak nyangkut di Home/Intro)
-  await Future.delayed(const Duration(milliseconds: 300));
+  // tunggu UI siap supaya tidak kalah oleh Intro/Home
+  await Future.delayed(const Duration(milliseconds: 500));
 
   try {
     final supabase = Supabase.instance.client;
@@ -63,7 +62,7 @@ Future<void> main() async {
   const InitializationSettings initSettings =
       InitializationSettings(android: androidInit);
 
-  // ✅ klik notif saat app masih terbuka (foreground local notif)
+  // klik notif local (saat foreground)
   await flutterLocalNotificationsPlugin.initialize(
     initSettings,
     onDidReceiveNotificationResponse: (details) async {
@@ -76,7 +75,7 @@ Future<void> main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(_androidChannel);
 
-  // ✅ foreground: tampilkan notif biasa + bawa todo_id via payload
+  // tampilkan notif saat app foreground + bawa todo_id ke payload
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     final notif = message.notification;
     if (notif == null) return;
@@ -137,13 +136,13 @@ class _MyAppState extends State<MyApp> {
         await _saveTokenToSupabase(newToken);
       });
 
-      // ✅ app dibuka dari kondisi closed
+      // app dibuka dari kondisi mati (killed) lewat notif
       final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
       if (initialMessage != null) {
         await _openTodoById(initialMessage.data['todo_id']);
       }
 
-      // ✅ app dibuka dari background klo nontip di klik
+      // app dibuka dari background lewat klik notif
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
         await _openTodoById(message.data['todo_id']);
       });

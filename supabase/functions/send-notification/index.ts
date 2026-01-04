@@ -133,10 +133,18 @@ serve(async (_req) => {
       body: todo.description || "Jangan lupa kerjakan tugasmu!",
     },
     data: {
-      todo_id: String(todo.id),   
+      todo_id: String(todo.id),
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
+    },
+    android: {
+      priority: "HIGH",
+      notification: {
+        clickAction: "FLUTTER_NOTIFICATION_CLICK",
+      },
     },
   },
 }),
+
 
         }
       );
