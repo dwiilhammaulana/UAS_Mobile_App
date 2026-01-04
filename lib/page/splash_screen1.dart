@@ -2,20 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:uas_mobile_app/page/login.dart';
 import 'package:uas_mobile_app/page/splash_screen2.dart';
 
-class SplashPageThree extends StatelessWidget {
-  const SplashPageThree({super.key});
-
-  static Widget _dot(bool active) {
-    return Container(
-      margin: const EdgeInsets.only(right: 6),
-      width: active ? 10 : 6,
-      height: 6,
-      decoration: BoxDecoration(
-        color: active ? Colors.black : Colors.black38,
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
-  }
+class SplashPageOne extends StatelessWidget {
+  const SplashPageOne({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +11,7 @@ class SplashPageThree extends StatelessWidget {
       backgroundColor: const Color(0xFFFFC107),
       body: Stack(
         children: [
+          // ===== BACKGROUND HITAM MELENGKUNG =====
           ClipPath(
             clipper: TopCurveClipper(),
             child: Container(
@@ -38,37 +27,35 @@ class SplashPageThree extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ===== HEADER: BACK SAJA (SKIP HILANG) =====
+                  // ===== HEADER (TANPA ICON BACK) =====
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            PageRouteBuilder(
-                              pageBuilder: (_, __, ___) =>
-                                  const SplashPageTwo(),
-                              transitionsBuilder: (_, animation, __, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                              transitionDuration:
-                                  const Duration(milliseconds: 200),
+                            MaterialPageRoute(
+                              builder: (_) => const AuthScreen(),
                             ),
                           );
                         },
+                        child: const Text(
+                          "Skip",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 40),
 
+                  // ===== TEXT =====
                   const Text(
-                    "Rapi & Produktif",
+                    "Terlalu banyak Job",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -77,44 +64,47 @@ class SplashPageThree extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 10),
-
                   const Text(
-                    "Dengan NoteZy, catat, atur, dan selesaikan tugas harianmu tanpa ribet.",
+                    "Terlalu banyak rencana dan catatan yang tersebar di mana-mana membuat semuanya terasa tidak terkendali.",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
+                  // ===== GAMBAR =====
                   const SizedBox(height: 30),
-
                   Expanded(
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FractionallySizedBox(
                         widthFactor: 0.9,
                         child: Image.asset(
-                          'assets/images/3.png',
+                          'assets/images/1.png',
                           fit: BoxFit.contain,
                         ),
                       ),
                     ),
                   ),
 
-                  // ===== INDICATOR + NEXT =====
+                  // ===== INDIKATOR + NEXT (TETAP ADA) =====
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [_dot(false), _dot(false), _dot(true)]),
+                      Row(children: [_dot(true), _dot(false), _dot(false)]),
                       CircleAvatar(
                         radius: 26,
                         backgroundColor: Colors.black,
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_forward,
-                              color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
                               PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => const AuthScreen(),
-                                transitionsBuilder: (_, animation, __, child) {
+                                pageBuilder: (_, __, ___) =>
+                                    const SplashPageTwo(),
+                                transitionsBuilder:
+                                    (_, animation, __, child) {
                                   return FadeTransition(
                                     opacity: animation,
                                     child: child,
@@ -137,9 +127,21 @@ class SplashPageThree extends StatelessWidget {
       ),
     );
   }
+
+  static Widget _dot(bool active) {
+    return Container(
+      margin: const EdgeInsets.only(right: 6),
+      width: active ? 10 : 6,
+      height: 6,
+      decoration: BoxDecoration(
+        color: active ? Colors.black : const Color.fromARGB(96, 0, 0, 0),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
 }
 
-// ini untuk buat lengkungan item diatas
+/// ===== CUSTOM CLIPPER =====
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

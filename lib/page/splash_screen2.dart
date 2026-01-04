@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:uas_mobile_app/page/login.dart';
-import 'package:uas_mobile_app/page/splash_screen2.dart';
+import 'package:uas_mobile_app/page/login.dart'; // AuthScreen
+import 'package:uas_mobile_app/page/splash_screen1.dart'; // SplashPageOne
+import 'package:uas_mobile_app/page/splash_screen3.dart'; // SplashPageThree
 
-class SplashPageThree extends StatelessWidget {
-  const SplashPageThree({super.key});
+class SplashPageTwo extends StatelessWidget {
+  const SplashPageTwo({super.key});
 
   static Widget _dot(bool active) {
     return Container(
@@ -38,9 +39,9 @@ class SplashPageThree extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ===== HEADER: BACK SAJA (SKIP HILANG) =====
+                  // ===== HEADER: BACK & SKIP =====
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -48,8 +49,7 @@ class SplashPageThree extends StatelessWidget {
                           Navigator.pushReplacement(
                             context,
                             PageRouteBuilder(
-                              pageBuilder: (_, __, ___) =>
-                                  const SplashPageTwo(),
+                              pageBuilder: (_, __, ___) => const SplashPageOne(),
                               transitionsBuilder: (_, animation, __, child) {
                                 return FadeTransition(
                                   opacity: animation,
@@ -62,13 +62,27 @@ class SplashPageThree extends StatelessWidget {
                           );
                         },
                       ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AuthScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Skip",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ),
                     ],
                   ),
 
                   const SizedBox(height: 40),
 
                   const Text(
-                    "Rapi & Produktif",
+                    "Sederhana & Jelas",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -79,7 +93,7 @@ class SplashPageThree extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   const Text(
-                    "Dengan NoteZy, catat, atur, dan selesaikan tugas harianmu tanpa ribet.",
+                    "Saat semua rencana disatukan dalam satu tempat, mengatur tugas jadi lebih mudah dan terarah.",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
@@ -91,7 +105,7 @@ class SplashPageThree extends StatelessWidget {
                       child: FractionallySizedBox(
                         widthFactor: 0.9,
                         child: Image.asset(
-                          'assets/images/3.png',
+                          'assets/images/2.png',
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -102,7 +116,7 @@ class SplashPageThree extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [_dot(false), _dot(false), _dot(true)]),
+                      Row(children: [_dot(false), _dot(true), _dot(false)]),
                       CircleAvatar(
                         radius: 26,
                         backgroundColor: Colors.black,
@@ -113,7 +127,8 @@ class SplashPageThree extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => const AuthScreen(),
+                                pageBuilder: (_, __, ___) =>
+                                    const SplashPageThree(),
                                 transitionsBuilder: (_, animation, __, child) {
                                   return FadeTransition(
                                     opacity: animation,
