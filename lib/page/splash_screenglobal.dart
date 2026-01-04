@@ -18,3 +18,12 @@ return Scaffold(
 body: Stack(
   children: [],
 ),
+
+ClipPath(
+  clipper: TopCurveClipper(),
+  child: Container(
+    height: 300,
+    width: double.infinity,
+    color: const Color(0xFF111827),
+  ),
+),
