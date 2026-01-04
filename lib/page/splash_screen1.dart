@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uas_mobile_app/page/login.dart';
 import 'package:uas_mobile_app/page/splash_screen2.dart';
+
+
 
 class SplashPageOne extends StatelessWidget {
   const SplashPageOne({super.key});
@@ -28,20 +31,27 @@ class SplashPageOne extends StatelessWidget {
                 children: [
                   // ===== HEADER =====
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Icon(Icons.arrow_back, color: Colors.white),
-                      GestureDetector(
-                        onTap: () {
-                          // nanti ke AuthScreen
-                        },
-                        child: const Text(
-                          "Skip",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AuthScreen(),
+          ),
+        );
+      },
+      child: const Text(
+        "Skip",
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+        ),
+      ),
+    ),
+  ],
+),
 
                   const SizedBox(height: 40),
 
