@@ -10,3 +10,7 @@ class SplashPageGlobal extends StatelessWidget {
     return Scaffold();
   }
 }
+
+return Scaffold(
+  backgroundColor: const Color(0xFFFFC107),
+);
