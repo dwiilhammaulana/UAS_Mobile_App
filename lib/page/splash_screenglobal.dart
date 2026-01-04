@@ -92,3 +92,37 @@ Padding(
     ),
   ),
 ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Row(
+      children: [],
+    ),
+    CircleAvatar(
+      radius: 26,
+      backgroundColor: Colors.black,
+      child: IconButton(
+        icon: const Icon(
+          Icons.arrow_forward,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => const SplashPageOne(),
+              transitionsBuilder: (_, animation, __, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              transitionDuration:
+                  const Duration(milliseconds: 200),
+            ),
+          );
+        },
+      ),
+    ),
+  ],
+),
