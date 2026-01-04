@@ -150,5 +150,56 @@ class _IntroAnimationPageState extends State<IntroAnimationPage>
         ),
       ),
     );
+<<<<<<< HEAD
+  });
+}
+@override
+void dispose() {
+  _controller.dispose();
+  super.dispose();
+}
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SlideTransition(
+            position: _logoSlideAnimation,
+            child: ScaleTransition(
+              scale: _logoScaleAnimation,
+              child: Image.asset(
+                'assets/icon/Note_Z.png',
+                width: 150,
+                height: 150,
+              ),
+            ),
+          ),
+          const SizedBox(height: 1),
+          FadeTransition(
+            opacity: _textFadeAnimation,
+            child: SlideTransition(
+              position: _textSlideAnimation,
+              child: Text(
+                "NoteZy",
+                style: GoogleFonts.lobster(
+                  color: Colors.white,
+                  fontSize: 42,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+=======
   }
 }
+>>>>>>> origin/integration
