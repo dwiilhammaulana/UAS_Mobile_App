@@ -126,14 +126,18 @@ serve(async (_req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            message: {
-              token: fcmToken,
-              notification: {
-                title: `🔔 Tugas: ${todo.title}`,
-                body: todo.description || "Jangan lupa kerjakan tugasmu!",
-              },
-            },
-          }),
+  message: {
+    token: fcmToken,
+    notification: {
+      title: `🔔 Tugas: ${todo.title}`,
+      body: todo.description || "Jangan lupa kerjakan tugasmu!",
+    },
+    data: {
+      todo_id: String(todo.id),   
+    },
+  },
+}),
+
         }
       );
 
