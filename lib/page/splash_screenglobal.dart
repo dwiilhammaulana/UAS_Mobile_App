@@ -69,3 +69,10 @@ Expanded(
     children: [],
   ),
 ),
+FractionallySizedBox(
+  widthFactor: 0.8,
+  child: Image.asset(
+    'assets/images/global.png',
+    fit: BoxFit.contain,
+  ),
+),
