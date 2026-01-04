@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uas_mobile_app/page/home.dart';
 
+
 // 1. PASTIKAN IMPORT INI SESUAI DENGAN LOKASI FILE HOME KAMU
 
 final supabase = Supabase.instance.client;
