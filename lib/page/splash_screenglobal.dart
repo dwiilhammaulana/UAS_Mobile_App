@@ -62,3 +62,10 @@ Row(
   ],
 ),
 const SizedBox(height: 40),
+
+Expanded(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [],
+  ),
+),
