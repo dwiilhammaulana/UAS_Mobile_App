@@ -5,13 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uas_mobile_app/page/intro.dart';
 
-// handler background
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  debugPrint("BG message: ${message.messageId}");
-}
+final supabase = Supabase.instance.client;
 
-// local notifications
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -22,7 +17,12 @@ const AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
   importance: Importance.max,
 );
 
-void main() async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  debugPrint("BG message: ${message.messageId}");
+}
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
@@ -31,7 +31,6 @@ void main() async {
 
   const AndroidInitializationSettings androidInit =
       AndroidInitializationSettings('@mipmap/ic_launcher');
-
   const InitializationSettings initSettings =
       InitializationSettings(android: androidInit);
 
@@ -42,6 +41,28 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(_androidChannel);
 
+  // ✅ INI YANG PENTING: foreground listener dipasang di main()
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    final notif = message.notification;
+    if (notif == null) return;
+
+    await flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      notif.title,
+      notif.body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'task_channel',
+          'Task Notifications',
+          channelDescription: 'Reminder tugas',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+      ),
+    );
+  });
+
   await Supabase.initialize(
     url: 'https://freneyxlkefpyooynhee.supabase.co',
     anonKey: 'sb_publishable_qvWRRfqVHaXWfwsoKFrRsg_vJQLXrdE',
@@ -49,8 +70,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
-final supabase = Supabase.instance.client;
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -86,55 +105,21 @@ class _MyAppState extends State<MyApp> {
         await _saveTokenToSupabase(newToken);
       });
 
-      // foreground: tampilkan notifikasi biasa
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        final notif = message.notification;
-        if (notif == null) return;
-
-        await flutterLocalNotificationsPlugin.show(
-          notif.hashCode,
-          notif.title,
-          notif.body,
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'task_channel',
-              'Task Notifications',
-              channelDescription: 'Reminder tugas',
-              importance: Importance.max,
-              priority: Priority.high,
-              icon: '@mipmap/ic_launcher',
-            ),
-          ),
-        );
-      });
-
-      // klik notifikasi saat buka dari background
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         debugPrint("Notif clicked");
-        // navigasi bisa kamu taruh di sini kalau mau
       });
-    } else {
-      debugPrint("Notif permission denied");
     }
   }
 
   Future<void> _saveTokenToSupabase(String token) async {
     final userId = supabase.auth.currentUser?.id;
-    if (userId == null) {
-      debugPrint("User belum login, token tidak disimpan");
-      return;
-    }
+    if (userId == null) return;
 
-    try {
-      await supabase.from('firebase_tokens').upsert({
-        'user_id': userId,
-        'fcm_token': token,
-        'updated_at': DateTime.now().toIso8601String(),
-      });
-      debugPrint("Token FCM tersimpan");
-    } catch (e) {
-      debugPrint("Gagal simpan token: $e");
-    }
+    await supabase.from('firebase_tokens').upsert({
+      'user_id': userId,
+      'fcm_token': token,
+      'updated_at': DateTime.now().toIso8601String(),
+    });
   }
 
   @override
