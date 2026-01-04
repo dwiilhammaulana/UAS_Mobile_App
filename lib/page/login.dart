@@ -3,6 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uas_mobile_app/page/home.dart';
 
+// 1. PASTIKAN IMPORT INI SESUAI DENGAN LOKASI FILE HOME KAMU
+
 final supabase = Supabase.instance.client;
 
 class AuthScreen extends StatefulWidget {
@@ -15,101 +17,86 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   String _message = "";
-  bool _isLoading = false;
 
+  // Fungsi Helper untuk Navigasi agar tidak menulis ulang kode
   void _navigateToHome() {
-    if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
   }
 
+  // ================= REGISTER SUPABASE =================
   Future<void> _register() async {
-    setState(() {
-      _isLoading = true;
-      _message = "";
-    });
-
     try {
       await supabase.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
       setState(() {
-        _message = "Registrasi berhasil. Cek email untuk verifikasi.";
+        _message = "Register Berhasil! Silakan cek email konfirmasi Anda.";
       });
     } catch (e) {
       setState(() {
-        _message = "Registrasi gagal";
+        _message = "Register Gagal: ${e.toString()}";
       });
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 
+  // ================= LOGIN SUPABASE =================
   Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-      _message = "";
-    });
-
     try {
       await supabase.auth.signInWithPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
+      
+      // JIKA BERHASIL, PINDAH KE HOME
       _navigateToHome();
+
     } catch (e) {
       setState(() {
-        _message = "Email atau password salah";
+        _message = "Login Gagal: ${e.toString()}";
       });
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 
+  // ================= LOGIN GOOGLE SUPABASE =================
   Future<void> _loginWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-      _message = "";
-    });
-
     try {
-      final googleSignIn = GoogleSignIn();
-      final googleUser = await googleSignIn.signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-      if (googleUser == null) {
-        setState(() => _message = "Login dibatalkan");
-        return;
-      }
+      if (googleUser == null) return;
 
-      final googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
 
-      if (googleAuth.idToken == null || googleAuth.accessToken == null) {
-        throw Exception("Token Google tidak valid");
+      if (idToken == null || accessToken == null) {
+        throw 'Gagal mendapatkan token dari Google';
       }
 
       await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
-        idToken: googleAuth.idToken!,
-        accessToken: googleAuth.accessToken!,
+        idToken: idToken,
+        accessToken: accessToken,
       );
 
+      // JIKA BERHASIL, PINDAH KE HOME
       _navigateToHome();
+
     } catch (e) {
       setState(() {
-        _message = "Login Google gagal";
+        _message = "Google Login Gagal: $e";
       });
-    } finally {
-      setState(() => _isLoading = false);
     }
   }
 
+  // ================= UI (TETAP SAMA) =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,32 +174,82 @@ class _AuthScreenState extends State<AuthScreen> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: _isLoading ? null : _login,
-                                  child: _isLoading
-                                      ? const CircularProgressIndicator(color: Colors.white)
-                                      : const Text("Login"),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: _login,
+                                  child: const Text("Login"),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: OutlinedButton(
-                                  onPressed: _isLoading ? null : _register,
-                                  child: const Text("Register"),
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    side: const BorderSide(color: Colors.grey),
+                                  ),
+                                  onPressed: _register,
+                                  child: const Text(
+                                    "Register",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.grey.shade300)),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Text("atau", style: TextStyle(fontSize: 12)),
+                              ),
+                              Expanded(child: Divider(color: Colors.grey.shade300)),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
                           ElevatedButton.icon(
-                            onPressed: _isLoading ? null : _loginWithGoogle,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: Colors.black12),
+                              ),
+                            ),
+                            onPressed: _loginWithGoogle,
                             icon: const Icon(Icons.g_mobiledata, size: 30),
                             label: const Text("Login dengan Google"),
                           ),
                           const SizedBox(height: 16),
                           if (_message.isNotEmpty)
-                            Text(
-                              _message,
-                              style: const TextStyle(color: Colors.red),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _message.contains("Berhasil")
+                                    ? Colors.green.shade50
+                                    : Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                _message,
+                                style: TextStyle(
+                                  color: _message.contains("Berhasil")
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
                         ],
                       ),
@@ -235,6 +272,7 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
+// Clipper tetap sama
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
