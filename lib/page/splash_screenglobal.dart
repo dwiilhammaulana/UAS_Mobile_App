@@ -76,3 +76,19 @@ FractionallySizedBox(
     fit: BoxFit.contain,
   ),
 ),
+const SizedBox(height: 20),
+
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 20),
+  child: Text(
+    "Aplikasi Todolist Mahasiswa\nGlobal Institute",
+    textAlign: TextAlign.center,
+    style: TextStyle(
+      color: Colors.black87,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 0.5,
+      height: 1.4,
+    ),
+  ),
+),
