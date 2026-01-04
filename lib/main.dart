@@ -4,10 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uas_mobile_app/page/intro.dart';
+import 'package:uas_mobile_app/page/todo_detail.dart';
 
-final supabase = Supabase.instance.client;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -24,6 +23,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("BG message: ${message.messageId}");
 }
 
+Future<void> _openTodoById(String? todoId) async {
+  if (todoId == null || todoId.isEmpty) return;
+
+  try {
+    final supabase = Supabase.instance.client;
+
+    final todo = await supabase
+        .from('todos')
+        .select('*')
+        .eq('id', todoId)
+        .single();
+
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => TodoDetailPage(todo: todo)),
+    );
+  } catch (e) {
+    debugPrint("Gagal buka todo: $e");
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -31,19 +50,28 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  await Supabase.initialize(
+    url: 'https://freneyxlkefpyooynhee.supabase.co',
+    anonKey: 'sb_publishable_qvWRRfqVHaXWfwsoKFrRsg_vJQLXrdE',
+  );
+
   const AndroidInitializationSettings androidInit =
       AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initSettings =
       InitializationSettings(android: androidInit);
 
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
+  await flutterLocalNotificationsPlugin.initialize(
+    initSettings,
+    onDidReceiveNotificationResponse: (details) async {
+      await _openTodoById(details.payload);
+    },
+  );
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(_androidChannel);
 
-  // ✅ INI YANG PENTING: foreground listener dipasang di main()
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     final notif = message.notification;
     if (notif == null) return;
@@ -62,13 +90,9 @@ Future<void> main() async {
           icon: '@mipmap/ic_launcher',
         ),
       ),
+      payload: message.data['todo_id'],
     );
   });
-
-  await Supabase.initialize(
-    url: 'https://freneyxlkefpyooynhee.supabase.co',
-    anonKey: 'sb_publishable_qvWRRfqVHaXWfwsoKFrRsg_vJQLXrdE',
-  );
 
   runApp(const MyApp());
 }
@@ -88,6 +112,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _setupNotifications() async {
+    final supabase = Supabase.instance.client;
     final messaging = FirebaseMessaging.instance;
 
     final settings = await messaging.requestPermission(
@@ -107,13 +132,19 @@ class _MyAppState extends State<MyApp> {
         await _saveTokenToSupabase(newToken);
       });
 
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        debugPrint("Notif clicked");
+      final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+      if (initialMessage != null) {
+        await _openTodoById(initialMessage.data['todo_id']);
+      }
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+        await _openTodoById(message.data['todo_id']);
       });
     }
   }
 
   Future<void> _saveTokenToSupabase(String token) async {
+    final supabase = Supabase.instance.client;
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
 
