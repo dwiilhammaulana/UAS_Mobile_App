@@ -55,7 +55,7 @@ class SplashPageOne extends StatelessWidget {
 
                   // ===== TEXT =====
                   const Text(
-                    "Syailendra Fas Faye",
+                    "Terlalu banyak Job",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -65,7 +65,7 @@ class SplashPageOne extends StatelessWidget {
 
                   const SizedBox(height: 10),
                   const Text(
-                    "1123150198",
+                    "Terlalu banyak rencana dan catatan yang tersebar di mana-mana membuat semuanya terasa tidak terkendali.",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
