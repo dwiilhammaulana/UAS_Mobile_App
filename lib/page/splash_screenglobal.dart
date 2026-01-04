@@ -126,3 +126,14 @@ Row(
     ),
   ],
 ),
+static Widget _dot(bool active) {
+  return Container(
+    margin: const EdgeInsets.only(right: 6),
+    width: active ? 10 : 6,
+    height: 6,
+    decoration: BoxDecoration(
+      color: active ? Colors.black : const Color.fromARGB(96, 0, 0, 0),
+      borderRadius: BorderRadius.circular(10),
+    ),
+  );
+}
