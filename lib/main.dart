@@ -2,28 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uas_mobile_app/page/intro.dart';
 
-// 2. Fungsi untuk menangani notifikasi saat aplikasi di background/tertutup
-// Harus diletakkan di luar class (top-level function)
+// handler background
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("Menangani pesan background: ${message.messageId}");
+  debugPrint("BG message: ${message.messageId}");
 }
+
+// local notifications
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+const AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
+  'task_channel',
+  'Task Notifications',
+  description: 'Reminder tugas',
+  importance: Importance.max,
+);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 3. Inisialisasi Firebase
   await Firebase.initializeApp();
-  
-  // Set handler untuk background
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Inisialisasi Supabase
+  const AndroidInitializationSettings androidInit =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initSettings =
+      InitializationSettings(android: androidInit);
+
+  await flutterLocalNotificationsPlugin.initialize(initSettings);
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(_androidChannel);
+
   await Supabase.initialize(
     url: 'https://freneyxlkefpyooynhee.supabase.co',
-    anonKey: 'sb_publishable_qvWRRfqVHaXWfwsoKFrRsg_vJQLXrdE', 
+    anonKey: 'sb_publishable_qvWRRfqVHaXWfwsoKFrRsg_vJQLXrdE',
   );
 
   runApp(const MyApp());
@@ -39,69 +60,80 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   @override
   void initState() {
     super.initState();
     _setupNotifications();
   }
 
-  // 4. Fungsi untuk mengatur notifikasi
   Future<void> _setupNotifications() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    final messaging = FirebaseMessaging.instance;
 
-    // Minta izin (Penting untuk Android 13+ dan iOS)
-    NotificationSettings settings = await messaging.requestPermission(
+    final settings = await messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      // Ambil Token FCM
-      String? token = await messaging.getToken();
+    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+        settings.authorizationStatus == AuthorizationStatus.provisional) {
+      final token = await messaging.getToken();
       if (token != null) {
-        _saveTokenToSupabase(token);
+        await _saveTokenToSupabase(token);
       }
 
-      // LISTENER 1: Saat aplikasi sedang terbuka (Foreground)
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Mendapat pesan (Foreground): ${message.notification?.title}');
-        
-        // Tampilkan snackbar sebagai tanda notifikasi masuk
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("${message.notification?.title}: ${message.notification?.body}"),
-              backgroundColor: const Color(0xFFFFC107), // Warna kuning khas aplikasi Anda
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
+      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+        await _saveTokenToSupabase(newToken);
       });
 
-      // LISTENER 2: Saat notifikasi diklik dan aplikasi terbuka dari background
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        print('Notifikasi diklik!');
-        // Anda bisa arahkan navigasi ke halaman tertentu di sini
+      // foreground: tampilkan notifikasi biasa
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        final notif = message.notification;
+        if (notif == null) return;
+
+        await flutterLocalNotificationsPlugin.show(
+          notif.hashCode,
+          notif.title,
+          notif.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'task_channel',
+              'Task Notifications',
+              channelDescription: 'Reminder tugas',
+              importance: Importance.max,
+              priority: Priority.high,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ),
+        );
       });
+
+      // klik notifikasi saat buka dari background
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        debugPrint("Notif clicked");
+        // navigasi bisa kamu taruh di sini kalau mau
+      });
+    } else {
+      debugPrint("Notif permission denied");
     }
   }
 
-  // Simpan token ke database Supabase Anda
   Future<void> _saveTokenToSupabase(String token) async {
     final userId = supabase.auth.currentUser?.id;
-    if (userId != null) {
-      try {
-        await supabase.from('firebase_tokens').upsert({
-          'user_id': userId,
-          'fcm_token': token,
-          'updated_at': DateTime.now().toIso8601String(),
-        });
-        print("Token FCM berhasil disimpan ke Supabase");
-      } catch (e) {
-        print("Gagal simpan token: $e");
-      }
+    if (userId == null) {
+      debugPrint("User belum login, token tidak disimpan");
+      return;
+    }
+
+    try {
+      await supabase.from('firebase_tokens').upsert({
+        'user_id': userId,
+        'fcm_token': token,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+      debugPrint("Token FCM tersimpan");
+    } catch (e) {
+      debugPrint("Gagal simpan token: $e");
     }
   }
 
