@@ -27,3 +27,7 @@ ClipPath(
     color: const Color(0xFF111827),
   ),
 ),
+
+SafeArea(
+  child: Container(),
+),
