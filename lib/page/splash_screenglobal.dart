@@ -31,3 +31,11 @@ ClipPath(
 SafeArea(
   child: Container(),
 ),
+SafeArea(
+  child: Padding(
+    padding: const EdgeInsets.all(20),
+    child: Column(
+      children: [],
+    ),
+  ),
+),
