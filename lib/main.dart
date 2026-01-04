@@ -26,6 +26,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> _openTodoById(String? todoId) async {
   if (todoId == null || todoId.isEmpty) return;
 
+  // penting: tunggu app/route siap (biar tidak nyangkut di Home/Intro)
+  await Future.delayed(const Duration(milliseconds: 300));
+
   try {
     final supabase = Supabase.instance.client;
 
@@ -60,6 +63,7 @@ Future<void> main() async {
   const InitializationSettings initSettings =
       InitializationSettings(android: androidInit);
 
+  // ✅ klik notif saat app masih terbuka (foreground local notif)
   await flutterLocalNotificationsPlugin.initialize(
     initSettings,
     onDidReceiveNotificationResponse: (details) async {
@@ -72,6 +76,7 @@ Future<void> main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(_androidChannel);
 
+  // ✅ foreground: tampilkan notif biasa + bawa todo_id via payload
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     final notif = message.notification;
     if (notif == null) return;
@@ -132,11 +137,13 @@ class _MyAppState extends State<MyApp> {
         await _saveTokenToSupabase(newToken);
       });
 
+      // ✅ app dibuka dari kondisi closed
       final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
       if (initialMessage != null) {
         await _openTodoById(initialMessage.data['todo_id']);
       }
 
+      // ✅ app dibuka dari background klo nontip di klik
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
         await _openTodoById(message.data['todo_id']);
       });
