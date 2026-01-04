@@ -39,3 +39,25 @@ SafeArea(
     ),
   ),
 ),
+Row(
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const AuthScreen(),
+          ),
+        );
+      },
+      child: const Text(
+        "Skip",
+        style: TextStyle(
+          color: Colors.white70,
+          fontSize: 14,
+        ),
+      ),
+    ),
+  ],
+),
