@@ -54,7 +54,7 @@ static Widget _dot(bool active) {
                   ),
                   const SizedBox(height: 40),
                   const Text(
-                    "Place order",
+                    "Rapi & Produktif",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 26,
@@ -63,7 +63,7 @@ static Widget _dot(bool active) {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    "Lorem ipsum dolor sit amet\nconsectetur adipiscing",
+                    "Dengan NoteZy, catat, atur, dan selesaikan tugas harianmu tanpa ribet.",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 30),
