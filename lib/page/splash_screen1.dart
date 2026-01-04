@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:uas_mobile_app/page/login.dart';
 import 'package:uas_mobile_app/page/splash_screen2.dart';
 
-
-
 class SplashPageOne extends StatelessWidget {
   const SplashPageOne({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFC107), // kuning
+      backgroundColor: const Color(0xFFFFC107),
       body: Stack(
         children: [
           // ===== BACKGROUND HITAM MELENGKUNG =====
@@ -29,29 +27,29 @@ class SplashPageOne extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ===== HEADER =====
+                  // ===== HEADER (TANPA ICON BACK) =====
                   Row(
-  mainAxisAlignment: MainAxisAlignment.end,
-  children: [
-    GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const AuthScreen(),
-          ),
-        );
-      },
-      child: const Text(
-        "Skip",
-        style: TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-        ),
-      ),
-    ),
-  ],
-),
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AuthScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Skip",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(height: 40),
 
@@ -71,21 +69,22 @@ class SplashPageOne extends StatelessWidget {
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
 
-                  // ===== GAMBAR TENGAH =====
+                  // ===== GAMBAR =====
                   const SizedBox(height: 30),
                   Expanded(
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: FractionallySizedBox(
-                        widthFactor: 0.9, // lebar relatif layar
+                        widthFactor: 0.9,
                         child: Image.asset(
                           'assets/images/1.png',
-                          fit: BoxFit.contain, // rasio AMAN
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
                   ),
-                  // ===== INDICATOR + NEXT =====
+
+                  // ===== INDIKATOR + NEXT (TETAP ADA) =====
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -104,15 +103,15 @@ class SplashPageOne extends StatelessWidget {
                               PageRouteBuilder(
                                 pageBuilder: (_, __, ___) =>
                                     const SplashPageTwo(),
-                                transitionsBuilder: (_, animation, __, child) {
+                                transitionsBuilder:
+                                    (_, animation, __, child) {
                                   return FadeTransition(
                                     opacity: animation,
                                     child: child,
                                   );
                                 },
-                                transitionDuration: const Duration(
-                                  milliseconds: 200,
-                                ),
+                                transitionDuration:
+                                    const Duration(milliseconds: 200),
                               ),
                             );
                           },
@@ -142,20 +141,18 @@ class SplashPageOne extends StatelessWidget {
   }
 }
 
-/// ===== CUSTOM CLIPPER UNTUK LENGKUNG =====
+/// ===== CUSTOM CLIPPER =====
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
     path.lineTo(0, size.height - 60);
-
     path.quadraticBezierTo(
       size.width / 2,
       size.height + 40,
       size.width,
       size.height - 60,
     );
-
     path.lineTo(size.width, 0);
     path.close();
     return path;
