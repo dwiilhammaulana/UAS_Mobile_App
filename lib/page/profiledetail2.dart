@@ -115,3 +115,16 @@ child: Column(
     _infoRow(icon: Icons.class_, label: "Kelas", value: kelas),
   ],
 ),
+Wrap(
+  spacing: 10,
+  children: keahlian.map((skill) {
+    return Chip(label: Text(skill));
+  }).toList(),
+),
+
+const SizedBox(height: 30),
+
+Text(
+  "Profile dibuat menggunakan Flutter",
+  style: TextStyle(color: Colors.grey[500], fontSize: 12),
+),
