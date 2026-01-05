@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 
-class profiledetail2 extends StatelessWidget {
-  const profiledetail2({super.key});
+class ProfileDetail extends StatelessWidget {
+  const ProfileDetail({super.key});
 
   // =========================
-  // DATA MAHASISWA 
+  // DATA MAHASISWA (WAJIB EDIT)
   // =========================
-  static const String nama = "Muhammad Ramzy Hidayat Siregar";
-  static const String nim = "1123150076";
-  static const String kelas = "TI-23-M-SE";
+  static const String nama = "Dwi Ilham Maulana";
+  static const String nim = "1123150008";
+  static const String kelas = "TI-3A";
 
   static const String fotoUrl =
-      "https://ui-avatars.com/api/?name=Muhammad+Ramzy+Hidayat+Siregar&background=1E3A8A&color=FFFFFF&size=256";
+      "https://ui-avatars.com/api/?name=Dwi+Ilham+Maulana&background=FFC107&color=111827&size=256";
 
   static const List<String> keahlian = [
     "Flutter Basic",
     "Firebase",
+    "Supabase",
     "UI / UX Design",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF3B82F6),
-        foregroundColor: Colors.white,
+        backgroundColor: const Color(0xFFFFC107),
+        foregroundColor: Colors.black,
         title: const Text(
           "Profile Mahasiswa",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -44,17 +44,14 @@ class profiledetail2 extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 24),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF1E3A8A),
-                    Color(0xFF60A5FA),
-                  ],
+                  colors: [Color(0xFFFFC107), Color(0xFFFFE082)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.08),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -67,8 +64,7 @@ class profiledetail2 extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage:
-                          const AssetImage('assets/images/ramzy.png'),
+                      backgroundImage: NetworkImage(fotoUrl),
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -77,14 +73,14 @@ class profiledetail2 extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Color(0xFF111827),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Mahasiswa Aktif",
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: Colors.grey[700],
                       fontSize: 13,
                     ),
                   ),
@@ -154,7 +150,7 @@ class profiledetail2 extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0F172A),
+                      color: Color(0xFF111827),
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -166,10 +162,11 @@ class profiledetail2 extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.15),
+                          color: const Color(0xFFFFC107).withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFF3B82F6).withOpacity(0.4),
+                            color:
+                                const Color(0xFFFFC107).withOpacity(0.4),
                           ),
                         ),
                         child: Text(
@@ -177,7 +174,7 @@ class profiledetail2 extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF0F172A),
+                            color: Color(0xFF111827),
                           ),
                         ),
                       );
@@ -190,7 +187,7 @@ class profiledetail2 extends StatelessWidget {
             const SizedBox(height: 30),
 
             // =====================
-            // FOOTER
+            // FOOTER (OPSIONAL)
             // =====================
             Text(
               "Profile dibuat menggunakan Flutter",
@@ -218,10 +215,10 @@ class profiledetail2 extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFF3B82F6).withOpacity(0.15),
+            color: const Color(0xFFFFC107).withOpacity(0.15),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Icon(icon, color: const Color(0xFF0F172A), size: 22),
+          child: Icon(icon, color: const Color(0xFF111827), size: 22),
         ),
         const SizedBox(width: 14),
         Column(
@@ -239,7 +236,7 @@ class profiledetail2 extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF0F172A),
+                color: Color(0xFF111827),
               ),
             ),
           ],

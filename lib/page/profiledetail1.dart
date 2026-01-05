@@ -4,7 +4,7 @@ class profiledetail1 extends StatelessWidget {
   final String nama = 'Syailendra Fas Faye';
   final String nim = '1123150198';
   final String kelas = 'TI 23 SE M';
-  final String fotoUrl = 'https://i.imgur.com/mwUEjfB.jpeg'; 
+  final String fotoUrl = 'assets/images/lendra.JPG';
   final List<String> keahlian = ['Flutter Basic', 'Database', 'Administrasi'];
 
   @override
@@ -21,7 +21,7 @@ class profiledetail1 extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 80,
-              backgroundImage: NetworkImage(fotoUrl), 
+              backgroundImage: NetworkImage(fotoUrl),
             ),
             SizedBox(height: 20),
 
@@ -35,7 +35,7 @@ class profiledetail1 extends StatelessWidget {
             ),
             SizedBox(height: 10),
 
-             Text(
+            Text(
               'NIM: $nim',
               style: TextStyle(
                 fontSize: 18,
@@ -81,7 +81,7 @@ class profiledetail1 extends StatelessWidget {
             ),
           ],
         ),
-        ),
+      ),
     );
   }
 }
