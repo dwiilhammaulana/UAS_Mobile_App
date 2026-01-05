@@ -21,7 +21,7 @@ class profiledetail1 extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 80,
-              backgroundImage: NetworkImage(fotoUrl),
+              backgroundImage: AssetImage(fotoUrl),
             ),
             SizedBox(height: 20),
 

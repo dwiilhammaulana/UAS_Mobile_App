@@ -74,6 +74,7 @@ flutter:
     - assets/images/global.png
     - assets/images/ramzy.png
     - assets/images/lendra.JPG
+    - assets/images/ilham.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

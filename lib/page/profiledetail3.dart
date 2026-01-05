@@ -8,114 +8,142 @@ class ProfileDetail extends StatelessWidget {
   // =========================
   static const String nama = "Dwi Ilham Maulana";
   static const String nim = "1123150008";
-  static const String kelas = "TI-3A";
+  static const String kelas = "TISE23M";
 
-  static const String fotoUrl =
-      "https://ui-avatars.com/api/?name=Dwi+Ilham+Maulana&background=FFC107&color=111827&size=256";
+  // Foto sekarang dari assets
+  static const String fotoAsset = "assets/images/ilham.png";
 
+  // Keahlian (sudah diubah)
   static const List<String> keahlian = [
-    "Flutter Basic",
-    "Firebase",
-    "Supabase",
-    "UI / UX Design",
+    "Backend Developer",
+    "UI Developer",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF4F5F7),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: const Color(0xFFFFC107),
-        foregroundColor: Colors.black,
+        foregroundColor: const Color(0xFF111827),
+        centerTitle: true,
         title: const Text(
           "Profile Mahasiswa",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.w800),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
         child: Column(
           children: [
             // =====================
-            // HEADER FOTO + NAMA
+            // HERO CARD (Foto + Nama + Badge)
             // =====================
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFFC107), Color(0xFFFFE082)],
+                  colors: [Color(0xFFFFC107), Color(0xFFFFECB3)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  )
+                    color: Colors.black.withOpacity(0.10),
+                    blurRadius: 22,
+                    offset: const Offset(0, 12),
+                  ),
                 ],
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Colors.white,
+                  // Foto dengan border + shadow
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
                     child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(fotoUrl),
+                      radius: 54,
+                      backgroundColor: const Color(0xFFF3F4F6),
+                      backgroundImage: const AssetImage(fotoAsset),
                     ),
                   ),
                   const SizedBox(height: 14),
                   Text(
                     nama,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
                       color: Color(0xFF111827),
+                      letterSpacing: 0.2,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Mahasiswa Aktif",
-                    style: TextStyle(
-                      color: Colors.grey[700],
-                      fontSize: 13,
+                  const SizedBox(height: 10),
+
+                  // Badge status
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.75),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.05),
+                      ),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.verified, size: 18, color: Color(0xFF111827)),
+                        SizedBox(width: 8),
+                        Text(
+                          "Mahasiswa Aktif",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 18),
 
             // =====================
-            // CARD DATA DIRI
+            // CARD DATA DIRI (lebih clean)
             // =====================
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(22),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  )
-                ],
-              ),
+            _SectionCard(
+              title: "Data Diri",
+              icon: Icons.person,
               child: Column(
                 children: [
                   _infoRow(
-                    icon: Icons.badge,
+                    icon: Icons.badge_outlined,
                     label: "NIM",
                     value: nim,
                   ),
-                  const Divider(height: 26),
+                  const SizedBox(height: 14),
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
                   _infoRow(
-                    icon: Icons.class_,
+                    icon: Icons.class_outlined,
                     label: "Kelas",
                     value: kelas,
                   ),
@@ -123,77 +151,72 @@ class ProfileDetail extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 18),
 
             // =====================
-            // CARD KEAHLIAN
+            // CARD KEAHLIAN (chip lebih bagus + icon)
             // =====================
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(22),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  )
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Keahlian",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF111827),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: keahlian.map((skill) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFC107).withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color:
-                                const Color(0xFFFFC107).withOpacity(0.4),
-                          ),
+            _SectionCard(
+              title: "Keahlian",
+              icon: Icons.workspace_premium_outlined,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: keahlian.map((skill) {
+                    final icon = _skillIcon(skill);
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFC107).withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: const Color(0xFFFFC107).withOpacity(0.45),
                         ),
-                        child: Text(
-                          skill,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF111827),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 6),
                           ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(icon, size: 18, color: const Color(0xFF111827)),
+                          const SizedBox(width: 8),
+                          Text(
+                            skill,
+                            style: const TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF111827),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 22),
 
             // =====================
-            // FOOTER (OPSIONAL)
+            // FOOTER
             // =====================
             Text(
               "Profile dibuat menggunakan Flutter",
               style: TextStyle(
-                color: Colors.grey[500],
+                color: Colors.grey[600],
                 fontSize: 12,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -203,7 +226,17 @@ class ProfileDetail extends StatelessWidget {
   }
 
   // =====================
-  // WIDGET BARIS INFO
+  // ICON UNTUK TIAP SKILL
+  // =====================
+  IconData _skillIcon(String skill) {
+    final s = skill.toLowerCase();
+    if (s.contains("backend")) return Icons.dns_outlined;
+    if (s.contains("ui")) return Icons.design_services_outlined;
+    return Icons.star_outline;
+  }
+
+  // =====================
+  // WIDGET BARIS INFO (lebih rapi)
   // =====================
   Widget _infoRow({
     required IconData icon,
@@ -213,35 +246,101 @@ class ProfileDetail extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(11),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFC107).withOpacity(0.15),
-            borderRadius: BorderRadius.circular(14),
+            color: const Color(0xFFFFC107).withOpacity(0.18),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, color: const Color(0xFF111827), size: 22),
         ),
         const SizedBox(width: 14),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF111827),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF111827),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
+    );
+  }
+}
+
+// =====================
+// REUSABLE SECTION CARD
+// =====================
+class _SectionCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Widget child;
+
+  const _SectionCard({
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF111827).withOpacity(0.06),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: const Color(0xFF111827), size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF111827),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
     );
   }
 }
