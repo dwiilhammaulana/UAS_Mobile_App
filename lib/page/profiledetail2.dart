@@ -75,3 +75,17 @@ Column(
     ),
   ],
 ),
+Container(
+  padding: const EdgeInsets.all(20),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(22),
+  ),
+  child: Column(
+    children: [
+      Text(nim),
+      const SizedBox(height: 8),
+      Text(kelas),
+    ],
+  ),
+),
