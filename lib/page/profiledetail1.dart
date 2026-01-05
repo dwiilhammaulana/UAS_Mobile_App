@@ -53,7 +53,15 @@ class profiledetail1 extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            
+            Text(
+              'Keahlian:',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 10),
           ],
         ),
         ),
