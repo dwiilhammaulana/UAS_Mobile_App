@@ -27,3 +27,15 @@ Widget build(BuildContext context) {
     backgroundColor: const Color(0xFFF1F5F9),
   );
 }
+return Scaffold(
+  backgroundColor: const Color(0xFFF1F5F9),
+  appBar: AppBar(
+    elevation: 0,
+    backgroundColor: const Color(0xFF3B82F6),
+    foregroundColor: Colors.white,
+    title: const Text(
+      "Profile Mahasiswa",
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ),
+  ),
+);
