@@ -62,6 +62,23 @@ class profiledetail1 extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: keahlian.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      leading: Icon(Icons.star, color: Colors.blue),
+                      title: Text(
+                        keahlian[index],
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
         ),
