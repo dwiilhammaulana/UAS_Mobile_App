@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ProfileDetailPage extends StatelessWidget {
-  const ProfileDetailPage({super.key});
+class ProfileDetail extends StatelessWidget {
+  const ProfileDetail({super.key});
 
   // =========================
   // DATA MAHASISWA (WAJIB EDIT)

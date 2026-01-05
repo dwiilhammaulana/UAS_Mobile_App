@@ -3,7 +3,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uas_mobile_app/page/profile.dart';
-import 'package:uas_mobile_app/page/profilepribadi1.dart';
+import 'package:uas_mobile_app/page/profiledetail1.dart';
+import 'package:uas_mobile_app/page/profiledetail2.dart';
+import 'package:uas_mobile_app/page/profiledetail3.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
 
 class HomePage extends StatefulWidget {
@@ -195,29 +197,29 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetailPage()),
+                  MaterialPageRoute(builder: (_) => const ProfileDetail()),
                 );
               },
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Dwi ilham maulana - 1123150008"),
+              title: const Text("Lendra - 1123150"),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => profiledetail1()),
                 );
               },
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Dwi ilham maulana - 1123150008"),
+              title: const Text("ramzy - 1123150"),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => const profiledetail2()),
                 );
               },
             ),
@@ -632,4 +634,8 @@ class _HomePageState extends State<HomePage> {
       debugPrint("Error Simpan: $e");
     }
   }
+}
+
+class ProfileDetailPage {
+  const ProfileDetailPage();
 }

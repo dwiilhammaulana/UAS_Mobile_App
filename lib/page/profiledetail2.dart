@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ProfileDetailPage extends StatelessWidget {
-  const ProfileDetailPage({super.key});
+class profiledetail2 extends StatelessWidget {
+  const profiledetail2({super.key});
 
   // =========================
   // DATA MAHASISWA 
@@ -67,7 +67,8 @@ class ProfileDetailPage extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(fotoUrl),
+                      backgroundImage:
+                          const AssetImage('assets/images/ramzy.png'),
                     ),
                   ),
                   const SizedBox(height: 14),
