@@ -108,3 +108,10 @@ Widget _infoRow({
     ],
   );
 }
+child: Column(
+  children: [
+    _infoRow(icon: Icons.badge, label: "NIM", value: nim),
+    const Divider(),
+    _infoRow(icon: Icons.class_, label: "Kelas", value: kelas),
+  ],
+),
