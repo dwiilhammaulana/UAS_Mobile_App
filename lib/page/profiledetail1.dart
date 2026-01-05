@@ -44,6 +44,15 @@ class profiledetail1 extends StatelessWidget {
             ),
             SizedBox(height: 10),
 
+            Text(
+              'Kelas: $kelas',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[700],
+              ),
+            ),
+            SizedBox(height: 20),
+
             
           ],
         ),
