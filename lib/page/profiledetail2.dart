@@ -45,3 +45,33 @@ body: SingleChildScrollView(
     children: [],
   ),
 ),
+Column(
+  children: [
+    Container(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1E3A8A), Color(0xFF60A5FA)],
+        ),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage(fotoUrl),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            nama,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ],
+),
