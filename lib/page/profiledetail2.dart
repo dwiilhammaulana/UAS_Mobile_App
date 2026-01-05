@@ -89,3 +89,22 @@ Container(
     ],
   ),
 ),
+Widget _infoRow({
+  required IconData icon,
+  required String label,
+  required String value,
+}) {
+  return Row(
+    children: [
+      Icon(icon),
+      const SizedBox(width: 8),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label),
+          Text(value),
+        ],
+      ),
+    ],
+  );
+}
