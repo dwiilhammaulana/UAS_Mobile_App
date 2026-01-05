@@ -39,3 +39,9 @@ return Scaffold(
     ),
   ),
 );
+body: SingleChildScrollView(
+  padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
+  child: Column(
+    children: [],
+  ),
+),
