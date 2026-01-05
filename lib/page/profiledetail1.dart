@@ -24,6 +24,16 @@ class profiledetail1 extends StatelessWidget {
               backgroundImage: NetworkImage(fotoUrl), 
             ),
             SizedBox(height: 20),
+
+            Text(
+              nama,
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 10),
           ],
         ),
         ),
