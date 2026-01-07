@@ -180,7 +180,8 @@ Widget _infoRow({
           child: Icon(icon, color: const Color(0xFF111827), size: 22),
         ),
         const SizedBox(width: 14),
-        
+        Column(
+        ),
       ],
     );
   }
