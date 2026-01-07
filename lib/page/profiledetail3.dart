@@ -90,6 +90,14 @@ class ProfileDetailPage extends StatelessWidget {
               ),
             ),
 
+            const SizedBox(height: 24),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(),
+            ),
+
           ],
         ),
       ),
