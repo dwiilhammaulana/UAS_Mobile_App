@@ -80,6 +80,12 @@ class ProfileDetailPage extends StatelessWidget {
                     label: "NIM",
                     value: nim,
                   ),
+                  const Divider(height: 26),
+                  _infoRow(
+                    icon: Icons.class_,
+                    label: "Kelas",
+                    value: kelas,
+                  ),
                 ],
               ),
             ),
