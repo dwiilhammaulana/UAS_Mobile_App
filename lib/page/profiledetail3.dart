@@ -164,5 +164,12 @@ class ProfileDetailPage extends StatelessWidget {
   }
 
 
-
+Widget _infoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    
+  }
+}
          
