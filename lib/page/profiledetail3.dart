@@ -150,10 +150,19 @@ class ProfileDetailPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-
+            Text(
+              "Profile dibuat menggunakan Flutter",
+              style: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 12,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-}
+
+
+
+         
