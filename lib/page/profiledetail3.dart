@@ -73,6 +73,15 @@ class ProfileDetailPage extends StatelessWidget {
                   )
                 ],
               ),
+              child: Column(
+                children: [
+                  _infoRow(
+                    icon: Icons.badge,
+                    label: "NIM",
+                    value: nim,
+                  ),
+                ],
+              ),
             ),
 
           ],
