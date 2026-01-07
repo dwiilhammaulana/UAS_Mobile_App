@@ -57,6 +57,24 @@ class ProfileDetailPage extends StatelessWidget {
                 ],
               ),
             ),
+
+            const SizedBox(height: 24),
+
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  )
+                ],
+              ),
+            ),
+
           ],
         ),
       ),
