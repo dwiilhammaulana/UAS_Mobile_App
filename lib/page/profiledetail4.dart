@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ProfileDetailPage extends StatelessWidget {
-  const ProfileDetailPage({super.key});
+class ProfileDetail4 extends StatelessWidget {
+  const ProfileDetail4({super.key});
 
   static const String nama = "Muhamad Ulin Nuha";
   static const String nim = "1123150002";
