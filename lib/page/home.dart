@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uas_mobile_app/page/profile.dart';
 import 'package:uas_mobile_app/page/profiledetail1.dart';
 import 'package:uas_mobile_app/page/profiledetail2.dart';
+import 'package:uas_mobile_app/page/profiledetail3.dart';
 import 'package:uas_mobile_app/page/profiledetail4.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
 
