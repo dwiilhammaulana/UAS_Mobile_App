@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uas_mobile_app/page/profile.dart';
 import 'package:uas_mobile_app/page/profiledetail1.dart';
 import 'package:uas_mobile_app/page/profiledetail2.dart';
-import 'package:uas_mobile_app/page/profiledetail3.dart';
+import 'package:uas_mobile_app/page/profiledetail4.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
 
 class HomePage extends StatefulWidget {
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetail()),
+                  MaterialPageRoute(builder: (_) => ProfileDetail3()),
                 );
               },
             ),
@@ -225,12 +225,12 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Dwi ilham maulana - 1123150008"),
+              title: const Text("Ulin Nuha - 1123150002"),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => const ProfileDetail4()),
                 );
               },
             ),
@@ -634,8 +634,4 @@ class _HomePageState extends State<HomePage> {
       debugPrint("Error Simpan: $e");
     }
   }
-}
-
-class ProfileDetailPage {
-  const ProfileDetailPage();
 }
