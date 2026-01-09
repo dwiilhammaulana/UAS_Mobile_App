@@ -44,14 +44,16 @@ NoteZy adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk
 
 
 </div>
-
 <div align="center">
-  <img src="screenshots/note_detail.png" alt="Note Detail" width="200"/>
-  <img src="screenshots/search.png" alt="Search" width="200"/>
-  <img src="screenshots/category.png" alt="Category" width="200"/>
-  <img src="screenshots/settings.png" alt="Settings" width="200"/>
-  <img src="screenshots/settings.png" alt="Settings" width="200"/>
+  <img src="assets/screenshots/login.png" alt="splash_Global institute" width="200"/>
+  <img src="assets/screenshots/login_auth.png" alt="splash_Global institute" width="200"/>
+  <img src="assets/screenshots/home.png" alt="splash_Global institute" width="200"/>
+  <img src="assets/screenshots/add_task.png" alt="splash_Global institute" width="200"/>
+  <img src="assets/screenshots/delete_task.png" alt="splash_Global institute" width="200"/>
+  <img src="assets/screenshots/edit_task.png" alt="splash_Global institute" width="200"/>
 </div>
+
+
 
 ## Demo Video
 
