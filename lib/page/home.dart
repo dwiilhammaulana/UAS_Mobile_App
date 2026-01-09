@@ -19,19 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final supabase = Supabase.instance.client;
 
-  // Scaffold key (tetap ada, tidak mengubah logika lama)
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // Controller Input
-  final _titleController = TextEditingController();
-  final _descController = TextEditingController();
-
-  // State Input
-  String _selectedStatus = 'todo';
-  String _selectedPriority = 'medium';
-  DateTime? _selectedDueDate;
-  TimeOfDay? _selectedDueTime;
-  String _reminderOffset = 'none';
 
   late final Stream<List<Map<String, dynamic>>> _todoStream;
 
@@ -45,14 +33,6 @@ class _HomePageState extends State<HomePage> {
         .order('created_at', ascending: false);
   }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descController.dispose();
-    super.dispose();
-  }
-
-  // --- SISTEM NOTIFIKASI: AMBIL TOKEN ---
   Future<void> _handleFcmToken() async {
     try {
       final FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -66,15 +46,11 @@ class _HomePageState extends State<HomePage> {
             'fcm_token': token,
             'updated_at': DateTime.now().toIso8601String(),
           });
-          debugPrint("Token FCM Sinkron");
         }
       }
-    } catch (e) {
-      debugPrint("Gagal Token: $e");
-    }
+    } catch (_) {}
   }
 
-  // --- FITUR: HAPUS TUGAS (TEKAN LAMA) ---
   Future<void> _deleteTodo(String id) async {
     bool confirm = await showDialog(
           context: context,
@@ -88,8 +64,7 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child:
-                    const Text("HAPUS", style: TextStyle(color: Colors.red)),
+                child: const Text("HAPUS", style: TextStyle(color: Colors.red)),
               ),
             ],
           ),
@@ -103,33 +78,16 @@ class _HomePageState extends State<HomePage> {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Terhapus")));
         }
-      } catch (e) {
-        debugPrint("Error hapus: $e");
-      }
+      } catch (_) {}
     }
   }
 
-  // --- FITUR: UPDATE STATUS CEPAT ---
   Future<void> _toggleStatus(String id, String currentStatus) async {
     final String newStatus =
         currentStatus == 'completed' ? 'todo' : 'completed';
     await supabase.from('todos').update({'status': newStatus}).eq('id', id);
   }
 
-  int _getPriorityWeight(String? priority) {
-    switch (priority?.toLowerCase()) {
-      case 'high':
-        return 0;
-      case 'medium':
-        return 1;
-      case 'low':
-        return 2;
-      default:
-        return 3;
-    }
-  }
-
-  // --- UI: ITEM TUGAS ---
   Widget _buildTaskItem(Map<String, dynamic> item) {
     bool isCompleted = item['status'] == 'completed';
     Color flagColor = item['priority'] == 'high'
@@ -149,7 +107,10 @@ class _HomePageState extends State<HomePage> {
         onLongPress: () => _deleteTodo(item['id']),
         contentPadding: EdgeInsets.zero,
         leading: IconButton(
-          icon: const SizedBox.shrink(),
+          icon: Icon(
+            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: isCompleted ? Colors.green : Colors.grey[300],
+          ),
           onPressed: () => _toggleStatus(item['id'], item['status']),
         ),
         title: Text(
@@ -159,14 +120,11 @@ class _HomePageState extends State<HomePage> {
             color: isCompleted ? Colors.grey : Colors.black87,
           ),
         ),
-        trailing: const SizedBox.shrink(),
+        trailing: Icon(Icons.flag, color: flagColor, size: 18),
       ),
     );
   }
 
-  // ==========================
-  // DRAWER KIRI (Dummy 4 menu)
-  // ==========================
   Drawer _buildLeftDrawer() {
     return Drawer(
       child: SafeArea(
@@ -186,10 +144,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 8),
-
-            // 4 baris menu (dummy) -> ganti ke page kamu nanti
             ListTile(
-              leading: null,
+              leading: const Icon(Icons.person),
               title: const Text("Dwi ilham maulana - 1123150008"),
               onTap: () {
                 Navigator.pop(context);
@@ -200,7 +156,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: null,
+              leading: const Icon(Icons.person),
               title: const Text("Lendra - 1123150"),
               onTap: () {
                 Navigator.pop(context);
@@ -211,7 +167,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: null,
+              leading: const Icon(Icons.person),
               title: const Text("ramzy - 1123150"),
               onTap: () {
                 Navigator.pop(context);
@@ -222,7 +178,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: null,
+              leading: const Icon(Icons.person),
               title: const Text("Ulin Nuha - 1123150002"),
               onTap: () {
                 Navigator.pop(context);
@@ -246,88 +202,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
+  Future<void> _showAddSheet() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.white,
-
-      // Drawer kiri tetap ada
-      drawer: _buildLeftDrawer(),
-
-      appBar: AppBar(
-        title: const Text(
-          "Task Manager",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFFFC107),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const SizedBox.shrink(),
-            onPressed: () async {
-              await supabase.auth.signOut();
-              if (mounted) Navigator.pushReplacementNamed(context, '/');
-            },
-          )
-        ],
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: _todoStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final todos = snapshot.data!;
-          final inProgress =
-              todos.where((t) => t['status'] == 'in_progress').toList();
-          final todoList = todos.where((t) => t['status'] == 'todo').toList();
-          final pending = todos.where((t) => t['status'] == 'pending').toList();
-          final completed =
-              todos.where((t) => t['status'] == 'completed').toList();
-
-          return ListView(
-            children: [
-              _buildProfileHeader(), // ✅ header versi bersih (tanpa titik/handle)
-              if (inProgress.isNotEmpty) ...[
-                _buildSectionHeader(
-                    "IN PROGRESS", inProgress.length, Colors.deepPurple),
-                ...inProgress.map((e) => _buildTaskItem(e))
-              ],
-              if (todoList.isNotEmpty) ...[
-                _buildSectionHeader("TO DO", todoList.length, Colors.grey),
-                ...todoList.map((e) => _buildTaskItem(e))
-              ],
-              if (pending.isNotEmpty) ...[
-                _buildSectionHeader("PENDING", pending.length, Colors.blue),
-                ...pending.map((e) => _buildTaskItem(e))
-              ],
-              if (completed.isNotEmpty) ...[
-                _buildSectionHeader(
-                    "COMPLETED", completed.length, Colors.green),
-                ...completed.map((e) => _buildTaskItem(e))
-              ],
-              const SizedBox(height: 100),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFFFFC107),
-        child: const SizedBox.shrink(),
-        onPressed: () => _showAddSheet(),
-      ),
+      builder: (_) => AddTodoSheet(supabase: supabase),
     );
   }
 
-  // --- HEADER PROFIL (TANPA TITIK/DRAG HANDLE DI SAMPING FOTO) ---
   Widget _buildProfileHeader() {
     final user = supabase.auth.currentUser;
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: supabase
-          .from('profiles')
-          .stream(primaryKey: ['id']).eq('id', user!.id),
+      stream:
+          supabase.from('profiles').stream(primaryKey: ['id']).eq('id', user!.id),
       builder: (context, snapshot) {
         String name = user.email?.split('@')[0] ?? "User";
         String? avatarUrl;
@@ -352,7 +244,6 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                // FOTO PROFIL (tanpa handle di samping)
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: const Color(0xFFFFC107),
@@ -363,7 +254,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                 ),
                 const SizedBox(width: 15),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -403,7 +293,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                const SizedBox.shrink(),
+                Icon(Icons.circle, size: 8, color: color),
                 const SizedBox(width: 6),
                 Text(
                   title,
@@ -429,162 +319,105 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // --- UI: FORM TAMBAH TUGAS ---
-  void _showAddSheet() {
-    _titleController.clear();
-    _descController.clear();
-    _selectedStatus = 'todo';
-    _selectedPriority = 'medium';
-    _selectedDueDate = null;
-    _selectedDueTime = null;
-    _reminderOffset = 'none';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) => Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 20,
-            right: 20,
-            top: 20,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(labelText: "Judul"),
-                ),
-                TextField(
-                  controller: _descController,
-                  decoration: const InputDecoration(labelText: "Keterangan"),
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedStatus,
-                        items: ['todo', 'pending', 'in_progress', 'completed']
-                            .map((s) => DropdownMenuItem(
-                                  value: s,
-                                  child: Text(s.toUpperCase()),
-                                ))
-                            .toList(),
-                        onChanged: (v) =>
-                            setModalState(() => _selectedStatus = v!),
-                        decoration: const InputDecoration(labelText: "Status"),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedPriority,
-                        items: ['low', 'medium', 'high']
-                            .map((p) => DropdownMenuItem(
-                                  value: p,
-                                  child: Text(p.toUpperCase()),
-                                ))
-                            .toList(),
-                        onChanged: (v) =>
-                            setModalState(() => _selectedPriority = v!),
-                        decoration:
-                            const InputDecoration(labelText: "Prioritas"),
-                      ),
-                    ),
-                  ],
-                ),
-                DropdownButtonFormField<String>(
-                  value: _reminderOffset,
-                  decoration: const InputDecoration(labelText: "Ingatkan Saya"),
-                  items: [
-                    {'label': 'Tanpa Pengingat', 'value': 'none'},
-                    {'label': '1 Jam Sebelum', 'value': '1_hour'},
-                    {'label': '3 Jam Sebelum', 'value': '3_hours'},
-                    {'label': '1 Hari Sebelum', 'value': '1_day'},
-                  ]
-                      .map((item) => DropdownMenuItem(
-                            value: item['value'],
-                            child: Text(item['label']!),
-                          ))
-                      .toList(),
-                  onChanged: (v) => setModalState(() => _reminderOffset = v!),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          _selectedDueDate == null
-                              ? "Set Tanggal"
-                              : DateFormat('dd/MM/yyyy')
-                                  .format(_selectedDueDate!),
-                        ),
-                        trailing: null,
-                        onTap: () async {
-                          final date = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2100),
-                          );
-                          if (date != null) {
-                            setModalState(() => _selectedDueDate = date);
-                          }
-                        },
-                      ),
-                    ),
-                    Expanded(
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          _selectedDueTime == null
-                              ? "Set Jam"
-                              : _selectedDueTime!.format(context),
-                        ),
-                        trailing: null,
-                        onTap: () async {
-                          final time = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-                          if (time != null) {
-                            setModalState(() => _selectedDueTime = time);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _saveTodo,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF111827),
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text("SIMPAN TUGAS"),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      drawer: _buildLeftDrawer(),
+      appBar: AppBar(
+        title: const Text(
+          "Task Manager",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: const Color(0xFFFFC107),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            onPressed: () async {
+              await supabase.auth.signOut();
+              if (mounted) Navigator.pushReplacementNamed(context, '/');
+            },
+          )
+        ],
+      ),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: _todoStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final todos = snapshot.data!;
+          final inProgress =
+              todos.where((t) => t['status'] == 'in_progress').toList();
+          final todoList = todos.where((t) => t['status'] == 'todo').toList();
+          final pending = todos.where((t) => t['status'] == 'pending').toList();
+          final completed =
+              todos.where((t) => t['status'] == 'completed').toList();
+
+          return ListView(
+            children: [
+              _buildProfileHeader(),
+              if (inProgress.isNotEmpty) ...[
+                _buildSectionHeader(
+                    "IN PROGRESS", inProgress.length, Colors.deepPurple),
+                ...inProgress.map(_buildTaskItem)
+              ],
+              if (todoList.isNotEmpty) ...[
+                _buildSectionHeader("TO DO", todoList.length, Colors.grey),
+                ...todoList.map(_buildTaskItem)
+              ],
+              if (pending.isNotEmpty) ...[
+                _buildSectionHeader("PENDING", pending.length, Colors.blue),
+                ...pending.map(_buildTaskItem)
+              ],
+              if (completed.isNotEmpty) ...[
+                _buildSectionHeader(
+                    "COMPLETED", completed.length, Colors.green),
+                ...completed.map(_buildTaskItem)
+              ],
+              const SizedBox(height: 100),
+            ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFFFFC107),
+        child: const Icon(Icons.add, color: Colors.black, size: 30),
+        onPressed: _showAddSheet,
       ),
     );
   }
+}
 
-  // --- LOGIKA SIMPAN TUGAS & HITUNG REMINDER ---
+class AddTodoSheet extends StatefulWidget {
+  final SupabaseClient supabase;
+  const AddTodoSheet({super.key, required this.supabase});
+
+  @override
+  State<AddTodoSheet> createState() => _AddTodoSheetState();
+}
+
+class _AddTodoSheetState extends State<AddTodoSheet> {
+  final _titleController = TextEditingController();
+  final _descController = TextEditingController();
+
+  String _selectedStatus = 'todo';
+  String _selectedPriority = 'medium';
+  DateTime? _selectedDueDate;
+  TimeOfDay? _selectedDueTime;
+  String _reminderOffset = 'none';
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveTodo() async {
     if (_titleController.text.isEmpty ||
         _selectedDueDate == null ||
@@ -613,8 +446,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     try {
-      await supabase.from('todos').insert({
-        'user_id': supabase.auth.currentUser!.id,
+      await widget.supabase.from('todos').insert({
+        'user_id': widget.supabase.auth.currentUser!.id,
         'title': _titleController.text,
         'description': _descController.text,
         'status': _selectedStatus,
@@ -630,8 +463,141 @@ class _HomePageState extends State<HomePage> {
         'reminder_sent': false,
       });
       if (mounted) Navigator.pop(context);
-    } catch (e) {
-      debugPrint("Error Simpan: $e");
-    }
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _titleController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(labelText: "Judul"),
+              ),
+              TextField(
+                controller: _descController,
+                textInputAction: TextInputAction.done,
+                decoration: const InputDecoration(labelText: "Keterangan"),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedStatus,
+                      items: ['todo', 'pending', 'in_progress', 'completed']
+                          .map((s) => DropdownMenuItem(
+                                value: s,
+                                child: Text(s.toUpperCase()),
+                              ))
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedStatus = v!),
+                      decoration: const InputDecoration(labelText: "Status"),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedPriority,
+                      items: ['low', 'medium', 'high']
+                          .map((p) => DropdownMenuItem(
+                                value: p,
+                                child: Text(p.toUpperCase()),
+                              ))
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedPriority = v!),
+                      decoration: const InputDecoration(labelText: "Prioritas"),
+                    ),
+                  ),
+                ],
+              ),
+              DropdownButtonFormField<String>(
+                value: _reminderOffset,
+                decoration: const InputDecoration(labelText: "Ingatkan Saya"),
+                items: const [
+                  {'label': 'Tanpa Pengingat', 'value': 'none'},
+                  {'label': '1 Jam Sebelum', 'value': '1_hour'},
+                  {'label': '3 Jam Sebelum', 'value': '3_hours'},
+                  {'label': '1 Hari Sebelum', 'value': '1_day'},
+                ]
+                    .map((item) => DropdownMenuItem(
+                          value: item['value'],
+                          child: Text(item['label']!),
+                        ))
+                    .toList(),
+                onChanged: (v) => setState(() => _reminderOffset = v!),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        _selectedDueDate == null
+                            ? "Set Tanggal"
+                            : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
+                      ),
+                      trailing: const Icon(Icons.calendar_month),
+                      onTap: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2100),
+                        );
+                        if (date != null) setState(() => _selectedDueDate = date);
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        _selectedDueTime == null
+                            ? "Set Jam"
+                            : _selectedDueTime!.format(context),
+                      ),
+                      trailing: const Icon(Icons.access_time),
+                      onTap: () async {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (time != null) setState(() => _selectedDueTime = time);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saveTodo,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF111827),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text("SIMPAN TUGAS"),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
