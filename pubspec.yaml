@@ -81,8 +81,16 @@ flutter:
     - assets/screenshots/splashsreen1.png
     - assets/screenshots/splashsreen2.png
     - assets/screenshots/splashsreen3.png
-2
-3
+    - assets/screenshots/login.png
+    - assets/screenshots/login_auth.png
+    - assets/screenshots/home.png
+    - assets/screenshots/add_task.png
+    - assets/screenshots/foreground_ntf.png
+    - assets/screenshots/background_ntf.png
+    - assets/screenshots/edit_task.png
+    - assets/screenshots/delete_task.png
+    - assets/screenshots/edit_profile.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
