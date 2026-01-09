@@ -66,11 +66,11 @@ class _HomePageState extends State<HomePage> {
             'fcm_token': token,
             'updated_at': DateTime.now().toIso8601String(),
           });
-          debugPrint("✅ Token FCM Sinkron");
+          debugPrint("Token FCM Sinkron");
         }
       }
     } catch (e) {
-      debugPrint("❌ Gagal Token: $e");
+      debugPrint("Gagal Token: $e");
     }
   }
 
@@ -149,10 +149,7 @@ class _HomePageState extends State<HomePage> {
         onLongPress: () => _deleteTodo(item['id']),
         contentPadding: EdgeInsets.zero,
         leading: IconButton(
-          icon: Icon(
-            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: isCompleted ? Colors.green : Colors.grey[300],
-          ),
+          icon: const SizedBox.shrink(),
           onPressed: () => _toggleStatus(item['id'], item['status']),
         ),
         title: Text(
@@ -162,7 +159,7 @@ class _HomePageState extends State<HomePage> {
             color: isCompleted ? Colors.grey : Colors.black87,
           ),
         ),
-        trailing: Icon(Icons.flag, color: flagColor, size: 18),
+        trailing: const SizedBox.shrink(),
       ),
     );
   }
@@ -192,7 +189,7 @@ class _HomePageState extends State<HomePage> {
 
             // 4 baris menu (dummy) -> ganti ke page kamu nanti
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: null,
               title: const Text("Dwi ilham maulana - 1123150008"),
               onTap: () {
                 Navigator.pop(context);
@@ -203,7 +200,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: null,
               title: const Text("Lendra - 1123150"),
               onTap: () {
                 Navigator.pop(context);
@@ -214,7 +211,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: null,
               title: const Text("ramzy - 1123150"),
               onTap: () {
                 Navigator.pop(context);
@@ -225,7 +222,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
+              leading: null,
               title: const Text("Ulin Nuha - 1123150002"),
               onTap: () {
                 Navigator.pop(context);
@@ -267,7 +264,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black),
+            icon: const SizedBox.shrink(),
             onPressed: () async {
               await supabase.auth.signOut();
               if (mounted) Navigator.pushReplacementNamed(context, '/');
@@ -318,7 +315,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFFFFC107),
-        child: const Icon(Icons.add, color: Colors.black, size: 30),
+        child: const SizedBox.shrink(),
         onPressed: () => _showAddSheet(),
       ),
     );
@@ -328,7 +325,9 @@ class _HomePageState extends State<HomePage> {
   Widget _buildProfileHeader() {
     final user = supabase.auth.currentUser;
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: supabase.from('profiles').stream(primaryKey: ['id']).eq('id', user!.id),
+      stream: supabase
+          .from('profiles')
+          .stream(primaryKey: ['id']).eq('id', user!.id),
       builder: (context, snapshot) {
         String name = user.email?.split('@')[0] ?? "User";
         String? avatarUrl;
@@ -404,7 +403,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                Icon(Icons.circle, size: 8, color: color),
+                const SizedBox.shrink(),
                 const SizedBox(width: 6),
                 Text(
                   title,
@@ -528,7 +527,7 @@ class _HomePageState extends State<HomePage> {
                               : DateFormat('dd/MM/yyyy')
                                   .format(_selectedDueDate!),
                         ),
-                        trailing: const Icon(Icons.calendar_month),
+                        trailing: null,
                         onTap: () async {
                           final date = await showDatePicker(
                             context: context,
@@ -550,7 +549,7 @@ class _HomePageState extends State<HomePage> {
                               ? "Set Jam"
                               : _selectedDueTime!.format(context),
                         ),
-                        trailing: const Icon(Icons.access_time),
+                        trailing: null,
                         onTap: () async {
                           final time = await showTimePicker(
                             context: context,
