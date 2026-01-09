@@ -90,6 +90,7 @@ flutter:
     - assets/screenshots/edit_task.png
     - assets/screenshots/delete_task.png
     - assets/screenshots/edit_profile.png
+    - assets/screenshots/dev_team.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
