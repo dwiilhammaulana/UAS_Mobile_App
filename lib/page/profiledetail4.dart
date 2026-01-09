@@ -49,7 +49,7 @@ class ProfileDetail4 extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(fotoUrl),
+                      backgroundImage: AssetImage("assets/images/nuha.png"),
                     ),
                   ),
                   const SizedBox(height: 14),
