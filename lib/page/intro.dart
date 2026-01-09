@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_mobile_app/page/home.dart';
-import 'package:uas_mobile_app/page/splash_screen1.dart';
+import 'package:uas_mobile_app/page/splash_screenglobal.dart';
 
 
 
@@ -86,7 +86,7 @@ class _IntroAnimationPageState extends State<IntroAnimationPage>
       if (session != null) {
         destination = const HomePage();
       } else {
-        destination = const SplashPageOne();
+        destination = const SplashPageGlobal();
       }
 
       Navigator.pushReplacement(
