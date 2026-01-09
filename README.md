@@ -21,9 +21,7 @@ https://global.ac.id/
 
 ## About The Project
 
-..... adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk membantu ....... menyediakan antarmuka yang intuitif, fitur sinkronisasi cloud menggunakan firebase authentication , firebase store, ..... dan .......
-
-Dengan .............. lain.
+NoteZy adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk membantu pengguna dalam mencatat tugas tugas harian, mingguan atau bahkan bulanan. dengan antarmuka yang mudah difahami, fiture sinkronisasi cloud menggunakan firebase autentication, supabase dan fitur cek realtime nontifikasi tugas.
 
 ### Key Features
 
@@ -31,8 +29,8 @@ Dengan .............. lain.
 - ....
 - ....
 - **Push Notifications** - Reminder untuk catatan penting
-- **Cloud Sync** - Sinkronisasi otomatis dengan Firebase
-- **Dark Mode** - Theme gelap untuk kenyamanan mata
+- **Cloud Sync** - Sinkronisasi otomatis dengan Supabase
+- **Dark Mode** - Theme terang untuk kenyamanan pengguna
 - ...
 - ...
 
