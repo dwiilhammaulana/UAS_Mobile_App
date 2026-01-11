@@ -374,6 +374,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "image_cropper",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/image_cropper-11.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "image_cropper_for_web",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/image_cropper_for_web-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "image_cropper_platform_interface",
+      "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/image_cropper_platform_interface-8.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "image_picker",
       "rootUri": "file:///C:/Users/Dwi%20ilham/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker-1.2.1",
       "packageUri": "lib/",
