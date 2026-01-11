@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final supabase = Supabase.instance.client;
+  final SupabaseClient supabase = Supabase.instance.client;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _handleFcmToken() async {
     try {
       final FirebaseMessaging messaging = FirebaseMessaging.instance;
-      String? token = await messaging.getToken();
+      final String? token = await messaging.getToken();
 
       if (token != null) {
         final user = supabase.auth.currentUser;
@@ -47,81 +47,52 @@ class _HomePageState extends State<HomePage> {
           });
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('FCM token error: $e');
+    }
   }
 
   Future<void> _deleteTodo(String id) async {
-    bool confirm = await showDialog(
+    final bool confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Hapus Tugas"),
-            content: const Text("Yakin ingin menghapus tugas ini?"),
+            title: const Text('Hapus Tugas'),
+            content: const Text('Yakin ingin menghapus tugas ini?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text("BATAL"),
+                child: const Text('BATAL'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text("HAPUS", style: TextStyle(color: Colors.red)),
+                child: const Text('HAPUS', style: TextStyle(color: Colors.red)),
               ),
             ],
           ),
         ) ??
         false;
 
-    if (confirm) {
-      try {
-        await supabase.from('todos').delete().eq('id', id);
-        if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Terhapus")));
-        }
-      } catch (_) {}
+    if (!confirm) return;
+
+    try {
+      await supabase.from('todos').delete().eq('id', id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Terhapus')),
+      );
+    } catch (e) {
+      debugPrint('Delete todo error: $e');
     }
   }
 
   Future<void> _toggleStatus(String id, String currentStatus) async {
     final String newStatus =
         currentStatus == 'completed' ? 'todo' : 'completed';
-    await supabase.from('todos').update({'status': newStatus}).eq('id', id);
-  }
-
-  Widget _buildTaskItem(Map<String, dynamic> item) {
-    bool isCompleted = item['status'] == 'completed';
-    Color flagColor = item['priority'] == 'high'
-        ? Colors.red
-        : (item['priority'] == 'medium' ? Colors.amber : Colors.grey);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
-      ),
-      child: ListTile(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TodoDetailPage(todo: item)),
-        ),
-        onLongPress: () => _deleteTodo(item['id']),
-        contentPadding: EdgeInsets.zero,
-        leading: IconButton(
-          icon: Icon(
-            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: isCompleted ? Colors.green : Colors.grey[300],
-          ),
-          onPressed: () => _toggleStatus(item['id'], item['status']),
-        ),
-        title: Text(
-          item['title'] ?? '',
-          style: TextStyle(
-            decoration: isCompleted ? TextDecoration.lineThrough : null,
-            color: isCompleted ? Colors.grey : Colors.black87,
-          ),
-        ),
-        trailing: Icon(Icons.flag, color: flagColor, size: 18),
-      ),
-    );
+    try {
+      await supabase.from('todos').update({'status': newStatus}).eq('id', id);
+    } catch (e) {
+      debugPrint('Toggle status error: $e');
+    }
   }
 
   Drawer _buildLeftDrawer() {
@@ -131,13 +102,19 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
-              color: const Color(0xFFFFC107),
+              padding: const EdgeInsets.all(18),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFC107), Color(0xFFFFE082)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
               child: const Text(
-                "Kelompok Anak Baik",
+                'Kelompok Anak Baik',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                   color: Colors.black,
                 ),
               ),
@@ -145,29 +122,18 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Dwi ilham maulana - 1123150008"),
+              title: const Text('Dwi ilham maulana - 1123150008'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => ProfileDetail3()),
+                  MaterialPageRoute(builder: (_) => const ProfileDetail3()),
                 );
               },
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Lendra - 1123150"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ProfileDetail2()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text("ramzy - 1123150"),
+              title: const Text('Lendra - 1123150'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -178,7 +144,18 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text("Ulin Nuha - 1123150002"),
+              title: const Text('ramzy - 1123150'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileDetail2()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Ulin Nuha - 1123150002'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -191,7 +168,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                "Swipe dari kiri untuk buka menu.",
+                'Swipe dari kiri untuk buka menu.',
                 style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
             ),
@@ -202,7 +179,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _showAddSheet() async {
-    await showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -216,59 +193,99 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildProfileHeader() {
     final user = supabase.auth.currentUser;
+    if (user == null) return const SizedBox.shrink();
+
     return StreamBuilder<List<Map<String, dynamic>>>(
-      stream:
-          supabase.from('profiles').stream(primaryKey: ['id']).eq('id', user!.id),
+      stream: supabase
+          .from('profiles')
+          .stream(primaryKey: ['id'])
+          .eq('id', user.id),
       builder: (context, snapshot) {
-        String name = user.email?.split('@')[0] ?? "User";
+        String name = user.email?.split('@')[0] ?? 'User';
         String? avatarUrl;
+
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          name = snapshot.data![0]['full_name'] ?? name;
-          avatarUrl = snapshot.data![0]['avatar_url'];
+          name = (snapshot.data![0]['full_name'] as String?) ?? name;
+          avatarUrl = snapshot.data![0]['avatar_url'] as String?;
         }
 
         return InkWell(
           onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ProfilePage()),
+            MaterialPageRoute(builder: (_) => const ProfilePage()),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            margin: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFC107).withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFFF4CC), Color(0xFFFFE082)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 30,
+                  radius: 28,
                   backgroundColor: const Color(0xFFFFC107),
                   backgroundImage: (avatarUrl != null && avatarUrl.isNotEmpty)
                       ? NetworkImage(avatarUrl)
                       : NetworkImage(
-                          'https://ui-avatars.com/api/?name=$name&background=FFC107&color=fff',
+                          'https://ui-avatars.com/api/?name=$name&background=FFC107&color=111827',
                         ),
                 ),
-                const SizedBox(width: 15),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Haii, selamat datang",
-                      style: TextStyle(color: Colors.grey[700], fontSize: 13),
-                    ),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF111827),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Halo, selamat datang',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    )
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF111827),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.75),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Colors.black.withValues(alpha: 0.06),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Color(0xFF111827),
+                  ),
                 ),
               ],
             ),
@@ -280,37 +297,38 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSectionHeader(String title, int count, Color color) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withValues(alpha: 0.3)),
+              color: color.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: color.withValues(alpha: 0.25)),
             ),
             child: Row(
               children: [
                 Icon(Icons.circle, size: 8, color: color),
-                const SizedBox(width: 6),
+                const SizedBox(width: 8),
                 Text(
                   title,
                   style: TextStyle(
                     color: color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 12,
+                    letterSpacing: 0.2,
                   ),
-                )
+                ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Text(
             count.toString(),
             style: TextStyle(
-              color: Colors.grey[400],
-              fontWeight: FontWeight.bold,
+              color: Colors.grey[500],
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
@@ -318,17 +336,175 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildTaskItem(Map<String, dynamic> item) {
+    final bool isCompleted = item['status'] == 'completed';
+    final String title = (item['title'] as String?) ?? '';
+    final String priority = (item['priority'] as String?) ?? 'low';
+
+    final Color priorityColor = priority == 'high'
+        ? Colors.red
+        : (priority == 'medium' ? Colors.amber : Colors.grey);
+
+    final String? dueDate = item['due_date'] as String?;
+    final String? dueTime = item['due_time'] as String?;
+
+    String? dueLabel;
+    if (dueDate != null && dueDate.isNotEmpty) {
+      try {
+        final DateTime parsed = DateTime.parse(dueDate);
+        final String dateText = DateFormat('dd MMM').format(parsed);
+        if (dueTime != null && dueTime.isNotEmpty) {
+          final String timeText =
+              dueTime.length >= 5 ? dueTime.substring(0, 5) : dueTime;
+          dueLabel = '$dateText • $timeText';
+        } else {
+          dueLabel = dateText;
+        }
+      } catch (_) {
+        dueLabel = null;
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        elevation: 0,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => TodoDetailPage(todo: item)),
+          ),
+          onLongPress: () => _deleteTodo(item['id'] as String),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 14,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => _toggleStatus(
+                    item['id'] as String,
+                    item['status'] as String,
+                  ),
+                  icon: Icon(
+                    isCompleted
+                        ? Icons.check_circle
+                        : Icons.radio_button_unchecked,
+                    color: isCompleted ? Colors.green : Colors.grey[300],
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          decoration:
+                              isCompleted ? TextDecoration.lineThrough : null,
+                          color: isCompleted ? Colors.grey : Colors.black87,
+                        ),
+                      ),
+                      if (dueLabel != null) ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.event,
+                                size: 14, color: Colors.grey[600]),
+                            const SizedBox(width: 6),
+                            Text(
+                              dueLabel,
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: priorityColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: priorityColor.withValues(alpha: 0.30),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.flag, size: 16, color: priorityColor),
+                      const SizedBox(width: 6),
+                      Text(
+                        priority.toUpperCase(),
+                        style: TextStyle(
+                          color: priorityColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _sortWithHighOnTop(
+    List<Map<String, dynamic>> items,
+  ) {
+    final List<Map<String, dynamic>> result = List<Map<String, dynamic>>.from(items);
+    result.sort((a, b) {
+      final String pa = (a['priority'] as String?) ?? 'low';
+      final String pb = (b['priority'] as String?) ?? 'low';
+      if (pa == pb) return 0;
+      if (pa == 'high') return -1;
+      if (pb == 'high') return 1;
+      return 0;
+    });
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF6F7FB),
       resizeToAvoidBottomInset: false,
       drawer: _buildLeftDrawer(),
       appBar: AppBar(
         title: const Text(
-          "Task Manager",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          'Task Manager',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900),
         ),
         backgroundColor: const Color(0xFFFFC107),
         elevation: 0,
@@ -337,9 +513,10 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.logout, color: Colors.black),
             onPressed: () async {
               await supabase.auth.signOut();
-              if (mounted) Navigator.pushReplacementNamed(context, '/');
+              if (!mounted) return;
+              Navigator.pushReplacementNamed(context, '/');
             },
-          )
+          ),
         ],
       ),
       body: StreamBuilder<List<Map<String, dynamic>>>(
@@ -349,43 +526,102 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final todos = snapshot.data!;
-          final inProgress =
-              todos.where((t) => t['status'] == 'in_progress').toList();
-          final todoList = todos.where((t) => t['status'] == 'todo').toList();
-          final pending = todos.where((t) => t['status'] == 'pending').toList();
-          final completed =
-              todos.where((t) => t['status'] == 'completed').toList();
+          final List<Map<String, dynamic>> todos = snapshot.data!;
+          final List<Map<String, dynamic>> inProgress =
+              _sortWithHighOnTop(todos.where((t) => t['status'] == 'in_progress').toList());
+          final List<Map<String, dynamic>> todoList =
+              _sortWithHighOnTop(todos.where((t) => t['status'] == 'todo').toList());
+          final List<Map<String, dynamic>> pending =
+              _sortWithHighOnTop(todos.where((t) => t['status'] == 'pending').toList());
+          final List<Map<String, dynamic>> completed =
+              _sortWithHighOnTop(todos.where((t) => t['status'] == 'completed').toList());
+
+          if (todos.isEmpty) {
+            return ListView(
+              children: [
+                _buildProfileHeader(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 16,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.inbox_outlined, size: 44),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Belum ada tugas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF111827),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Tekan tombol + untuk menambahkan tugas baru.',
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 120),
+              ],
+            );
+          }
 
           return ListView(
             children: [
               _buildProfileHeader(),
               if (inProgress.isNotEmpty) ...[
                 _buildSectionHeader(
-                    "IN PROGRESS", inProgress.length, Colors.deepPurple),
-                ...inProgress.map(_buildTaskItem)
+                  'IN PROGRESS',
+                  inProgress.length,
+                  Colors.deepPurple,
+                ),
+                ...inProgress.map(_buildTaskItem),
               ],
               if (todoList.isNotEmpty) ...[
-                _buildSectionHeader("TO DO", todoList.length, Colors.grey),
-                ...todoList.map(_buildTaskItem)
+                _buildSectionHeader('TO DO', todoList.length, Colors.grey),
+                ...todoList.map(_buildTaskItem),
               ],
               if (pending.isNotEmpty) ...[
-                _buildSectionHeader("PENDING", pending.length, Colors.blue),
-                ...pending.map(_buildTaskItem)
+                _buildSectionHeader('PENDING', pending.length, Colors.blue),
+                ...pending.map(_buildTaskItem),
               ],
               if (completed.isNotEmpty) ...[
-                _buildSectionHeader(
-                    "COMPLETED", completed.length, Colors.green),
-                ...completed.map(_buildTaskItem)
+                _buildSectionHeader('COMPLETED', completed.length, Colors.green),
+                ...completed.map(_buildTaskItem),
               ],
-              const SizedBox(height: 100),
+              const SizedBox(height: 120),
             ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         backgroundColor: const Color(0xFFFFC107),
-        child: const Icon(Icons.add, color: Colors.black, size: 30),
+        foregroundColor: Colors.black,
+        icon: const Icon(Icons.add),
+        label: const Text(
+          'Tambah',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
         onPressed: _showAddSheet,
       ),
     );
@@ -401,8 +637,8 @@ class AddTodoSheet extends StatefulWidget {
 }
 
 class _AddTodoSheetState extends State<AddTodoSheet> {
-  final _titleController = TextEditingController();
-  final _descController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
 
   String _selectedStatus = 'todo';
   String _selectedPriority = 'medium';
@@ -420,7 +656,9 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
   Future<void> _saveTodo() async {
     if (_titleController.text.isEmpty ||
         _selectedDueDate == null ||
-        _selectedDueTime == null) return;
+        _selectedDueTime == null) {
+      return;
+    }
 
     final DateTime fullDueDateTime = DateTime(
       _selectedDueDate!.year,
@@ -431,17 +669,12 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
     );
 
     DateTime? reminderFullDateTime;
-    if (_reminderOffset != 'none') {
-      if (_reminderOffset == '1_hour') {
-        reminderFullDateTime =
-            fullDueDateTime.subtract(const Duration(hours: 1));
-      } else if (_reminderOffset == '3_hours') {
-        reminderFullDateTime =
-            fullDueDateTime.subtract(const Duration(hours: 3));
-      } else if (_reminderOffset == '1_day') {
-        reminderFullDateTime =
-            fullDueDateTime.subtract(const Duration(days: 1));
-      }
+    if (_reminderOffset == '1_hour') {
+      reminderFullDateTime = fullDueDateTime.subtract(const Duration(hours: 1));
+    } else if (_reminderOffset == '3_hours') {
+      reminderFullDateTime = fullDueDateTime.subtract(const Duration(hours: 3));
+    } else if (_reminderOffset == '1_day') {
+      reminderFullDateTime = fullDueDateTime.subtract(const Duration(days: 1));
     }
 
     try {
@@ -461,13 +694,17 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
             : null,
         'reminder_sent': false,
       });
-      if (mounted) Navigator.pop(context);
-    } catch (_) {}
+
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (e) {
+      debugPrint('Insert todo error: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final double bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return AnimatedPadding(
       duration: const Duration(milliseconds: 180),
@@ -480,64 +717,144 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Container(
+                height: 5,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Tambah Tugas',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF111827),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _titleController,
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: "Judul"),
+                decoration: InputDecoration(
+                  labelText: 'Judul',
+                  filled: true,
+                  fillColor: const Color(0xFFF3F4F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
+              const SizedBox(height: 12),
               TextField(
                 controller: _descController,
                 textInputAction: TextInputAction.done,
-                decoration: const InputDecoration(labelText: "Keterangan"),
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Keterangan',
+                  filled: true,
+                  fillColor: const Color(0xFFF3F4F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: _selectedStatus,
-                      items: ['todo', 'pending', 'in_progress', 'completed']
-                          .map((s) => DropdownMenuItem(
-                                value: s,
-                                child: Text(s.toUpperCase()),
-                              ))
+                      items: const ['todo', 'pending', 'in_progress', 'completed']
+                          .map(
+                            (s) => DropdownMenuItem(
+                              value: s,
+                              child: Text(s.toUpperCase()),
+                            ),
+                          )
                           .toList(),
-                      onChanged: (v) => setState(() => _selectedStatus = v!),
-                      decoration: const InputDecoration(labelText: "Status"),
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() => _selectedStatus = v);
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Status',
+                        filled: true,
+                        fillColor: const Color(0xFFF3F4F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: _selectedPriority,
-                      items: ['low', 'medium', 'high']
-                          .map((p) => DropdownMenuItem(
-                                value: p,
-                                child: Text(p.toUpperCase()),
-                              ))
+                      items: const ['low', 'medium', 'high']
+                          .map(
+                            (p) => DropdownMenuItem(
+                              value: p,
+                              child: Text(p.toUpperCase()),
+                            ),
+                          )
                           .toList(),
-                      onChanged: (v) => setState(() => _selectedPriority = v!),
-                      decoration: const InputDecoration(labelText: "Prioritas"),
+                      onChanged: (v) {
+                        if (v == null) return;
+                        setState(() => _selectedPriority = v);
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Prioritas',
+                        filled: true,
+                        fillColor: const Color(0xFFF3F4F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: _reminderOffset,
-                decoration: const InputDecoration(labelText: "Ingatkan Saya"),
                 items: const [
                   {'label': 'Tanpa Pengingat', 'value': 'none'},
                   {'label': '1 Jam Sebelum', 'value': '1_hour'},
                   {'label': '3 Jam Sebelum', 'value': '3_hours'},
                   {'label': '1 Hari Sebelum', 'value': '1_day'},
                 ]
-                    .map((item) => DropdownMenuItem(
-                          value: item['value'],
-                          child: Text(item['label']!),
-                        ))
+                    .map(
+                      (item) => DropdownMenuItem<String>(
+                        value: item['value'],
+                        child: Text(item['label']!),
+                      ),
+                    )
                     .toList(),
-                onChanged: (v) => setState(() => _reminderOffset = v!),
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => _reminderOffset = v);
+                },
+                decoration: InputDecoration(
+                  labelText: 'Ingatkan Saya',
+                  filled: true,
+                  fillColor: const Color(0xFFF3F4F6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
@@ -545,42 +862,47 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(
                         _selectedDueDate == null
-                            ? "Set Tanggal"
+                            ? 'Set Tanggal'
                             : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
+                        style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                       trailing: const Icon(Icons.calendar_month),
                       onTap: () async {
-                        final date = await showDatePicker(
+                        final DateTime? date = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate: DateTime(2100),
                         );
-                        if (date != null) setState(() => _selectedDueDate = date);
+                        if (date == null) return;
+                        setState(() => _selectedDueDate = date);
                       },
                     ),
                   ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
                         _selectedDueTime == null
-                            ? "Set Jam"
+                            ? 'Set Jam'
                             : _selectedDueTime!.format(context),
+                        style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                       trailing: const Icon(Icons.access_time),
                       onTap: () async {
-                        final time = await showTimePicker(
+                        final TimeOfDay? time = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.now(),
                         );
-                        if (time != null) setState(() => _selectedDueTime = time);
+                        if (time == null) return;
+                        setState(() => _selectedDueTime = time);
                       },
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -588,11 +910,18 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF111827),
                     foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: const Text("SIMPAN TUGAS"),
+                  child: const Text(
+                    'SIMPAN TUGAS',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
             ],
           ),
         ),
