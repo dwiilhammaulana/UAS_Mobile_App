@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _setupNotifications() async {
-    final supabase = Supabase.instance.client;
+    // final supabase = Supabase.instance.client;
     final messaging = FirebaseMessaging.instance;
 
     final settings = await messaging.requestPermission(

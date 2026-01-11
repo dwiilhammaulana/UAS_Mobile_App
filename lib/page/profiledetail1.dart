@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
-class profiledetail1 extends StatelessWidget {
-  final String nama = 'Syailendra Fas Faye';
-  final String nim = '1123150198';
-  final String kelas = 'TI 23 SE M';
-  final String fotoUrl = 'assets/images/lendra.JPG';
-  final List<String> keahlian = ['Flutter Basic', 'Database', 'Administrasi'];
+class ProfileDetail1 extends StatelessWidget {
+  const ProfileDetail1({Key? key}) : super(key: key);
+
+  static const String nama = 'Syailendra Fas Faye';
+  static const String nim = '1123150198';
+  static const String kelas = 'TI 23 SE M';
+  static const String fotoUrl = 'assets/images/lendra.JPG';
+  static const List<String> keahlian = [
+    'Flutter Basic',
+    'Database',
+    'Administrasi',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil Mahasiswa'),
+        title: const Text('Profil Mahasiswa'),
         centerTitle: true,
       ),
       body: Padding(
@@ -19,13 +25,13 @@ class profiledetail1 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 80,
               backgroundImage: AssetImage(fotoUrl),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            Text(
+            const Text(
               nama,
               style: TextStyle(
                 fontSize: 28,
@@ -33,7 +39,7 @@ class profiledetail1 extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Text(
               'NIM: $nim',
@@ -42,7 +48,7 @@ class profiledetail1 extends StatelessWidget {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Text(
               'Kelas: $kelas',
@@ -51,9 +57,9 @@ class profiledetail1 extends StatelessWidget {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            Text(
+            const Text(
               'Keahlian:',
               style: TextStyle(
                 fontSize: 20,
@@ -61,18 +67,19 @@ class profiledetail1 extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+
             Expanded(
               child: ListView.builder(
                 itemCount: keahlian.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 5),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      leading: Icon(Icons.star, color: Colors.blue),
+                      leading: const Icon(Icons.star, color: Colors.blue),
                       title: Text(
                         keahlian[index],
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                   );

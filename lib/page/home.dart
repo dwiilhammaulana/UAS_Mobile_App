@@ -3,7 +3,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uas_mobile_app/page/profile.dart';
-import 'package:uas_mobile_app/page/profiledetail1.dart';
 import 'package:uas_mobile_app/page/profiledetail2.dart';
 import 'package:uas_mobile_app/page/profiledetail3.dart';
 import 'package:uas_mobile_app/page/profiledetail4.dart';
@@ -162,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => profiledetail1()),
+                  MaterialPageRoute(builder: (_) => ProfileDetail2()),
                 );
               },
             ),
@@ -173,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const profiledetail2()),
+                  MaterialPageRoute(builder: (_) => const ProfileDetail2()),
                 );
               },
             ),
@@ -236,7 +235,7 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFC107).withOpacity(0.1),
+              color: const Color(0xFFFFC107).withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
@@ -287,9 +286,9 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withOpacity(0.3)),
+              border: Border.all(color: color.withValues(alpha: 0.3)),
             ),
             child: Row(
               children: [

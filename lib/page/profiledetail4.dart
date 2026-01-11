@@ -44,7 +44,7 @@ class ProfileDetail4 extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 55,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
@@ -53,7 +53,7 @@ class ProfileDetail4 extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Text(nama),
+                  const Text(nama),
                 ],
               ),
             ),
@@ -67,7 +67,7 @@ class ProfileDetail4 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   )
@@ -100,7 +100,7 @@ class ProfileDetail4 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   )
@@ -126,11 +126,11 @@ class ProfileDetail4 extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFC107).withOpacity(0.15),
+                          color: const Color(0xFFFFC107).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color:
-                                const Color(0xFFFFC107).withOpacity(0.4),
+                            color: const Color(0xFFFFC107)
+                                .withValues(alpha: 0.4),
                           ),
                         ),
                         child: Text(
@@ -163,8 +163,7 @@ class ProfileDetail4 extends StatelessWidget {
     );
   }
 
-
-Widget _infoRow({
+  Widget _infoRow({
     required IconData icon,
     required String label,
     required String value,
@@ -174,7 +173,7 @@ Widget _infoRow({
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFC107).withOpacity(0.15),
+            color: const Color(0xFFFFC107).withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(icon, color: const Color(0xFF111827), size: 22),
@@ -204,4 +203,3 @@ Widget _infoRow({
     );
   }
 }
-         
