@@ -52,7 +52,7 @@ class ProfileDetail3 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.10),
+                    color: Colors.black.withValues(alpha: 0.10),
                     blurRadius: 22,
                     offset: const Offset(0, 12),
                   ),
@@ -68,7 +68,7 @@ class ProfileDetail3 extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 18,
                           offset: const Offset(0, 8),
                         ),
@@ -98,10 +98,10 @@ class ProfileDetail3 extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.75),
+                      color: Colors.white.withValues(alpha: 0.75),
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                       ),
                     ),
                     child: const Row(
@@ -172,14 +172,15 @@ class ProfileDetail3 extends StatelessWidget {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFC107).withOpacity(0.18),
+                        color: const Color(0xFFFFC107).withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: const Color(0xFFFFC107).withOpacity(0.45),
+                          color:
+                              const Color(0xFFFFC107).withValues(alpha: 0.45),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 6),
                           ),
@@ -248,7 +249,7 @@ class ProfileDetail3 extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(11),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFC107).withOpacity(0.18),
+            color: const Color(0xFFFFC107).withValues(alpha: 0.18),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Icon(icon, color: const Color(0xFF111827), size: 22),
@@ -307,7 +308,7 @@ class _SectionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -321,7 +322,7 @@ class _SectionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF111827).withOpacity(0.06),
+                  color: const Color(0xFF111827).withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: const Color(0xFF111827), size: 20),

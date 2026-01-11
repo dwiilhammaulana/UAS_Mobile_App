@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class profiledetail2 extends StatelessWidget {
-  const profiledetail2({super.key});
+class ProfileDetail2 extends StatelessWidget {
+  const ProfileDetail2({Key? key}) : super(key: key);
 
   // =========================
-  // DATA MAHASISWA 
+  // DATA MAHASISWA
   // =========================
   static const String nama = "Muhammad Ramzy Hidayat Siregar";
   static const String nim = "1123150076";
@@ -22,7 +22,6 @@ class profiledetail2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 
       backgroundColor: const Color(0xFFF1F5F9),
       appBar: AppBar(
         elevation: 0,
@@ -54,7 +53,7 @@ class profiledetail2 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.10),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -62,26 +61,25 @@ class profiledetail2 extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 55,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage:
-                          const AssetImage('assets/images/ramzy.png'),
+                      backgroundImage: AssetImage('assets/images/ramzy.png'),
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Text(
+                  const Text(
                     nama,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                  const Text(
                     "Mahasiswa Aktif",
                     style: TextStyle(
                       color: Colors.white70,
@@ -104,21 +102,21 @@ class profiledetail2 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   )
                 ],
               ),
               child: Column(
-                children: [
-                  _infoRow(
+                children: const [
+                  _InfoRow(
                     icon: Icons.badge,
                     label: "NIM",
                     value: nim,
                   ),
-                  const Divider(height: 26),
-                  _infoRow(
+                  Divider(height: 26),
+                  _InfoRow(
                     icon: Icons.class_,
                     label: "Kelas",
                     value: kelas,
@@ -140,7 +138,7 @@ class profiledetail2 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   )
@@ -164,12 +162,15 @@ class profiledetail2 extends StatelessWidget {
                     children: keahlian.map((skill) {
                       return Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3B82F6).withOpacity(0.15),
+                          color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFF3B82F6).withOpacity(0.4),
+                            color:
+                                const Color(0xFF3B82F6).withValues(alpha: 0.40),
                           ),
                         ),
                         child: Text(
@@ -204,21 +205,27 @@ class profiledetail2 extends StatelessWidget {
       ),
     );
   }
+}
 
-  // =====================
-  // WIDGET BARIS INFO
-  // =====================
-  Widget _infoRow({
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFF3B82F6).withOpacity(0.15),
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(icon, color: const Color(0xFF0F172A), size: 22),
