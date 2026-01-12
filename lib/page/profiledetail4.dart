@@ -49,8 +49,12 @@ class Profiledetail4 extends StatelessWidget {
                  Color(0xFF0F172A),
                   Color(0xFF1E293B),
                 ]
-                ) 
+                ), 
             ),
+          ),
+
+          SingleChildScrollView(
+
           )
         ],
        ),
