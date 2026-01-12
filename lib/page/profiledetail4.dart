@@ -19,7 +19,7 @@ class Profiledetail4 extends StatelessWidget {
     "image": "assets/images/coding.jpeg",
   },
   {
-    "title": "Membac",
+    "title": "Membaca",
     "image": "assets/images/membaca.jpeg",
   },
   ];
