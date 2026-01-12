@@ -130,6 +130,17 @@ class Profiledetail4 extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 24),
+
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                )
               ],
             ),
 
