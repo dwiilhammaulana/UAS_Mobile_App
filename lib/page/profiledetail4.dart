@@ -37,7 +37,10 @@ class Profiledetail4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+       backgroundColor: const Color(0xFFF1F5F9),
+       body: Stack(
+        
+       ),
     );
   }
 }
