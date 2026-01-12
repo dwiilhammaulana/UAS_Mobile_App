@@ -149,7 +149,23 @@ class Profiledetail4 extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 12),
+                     Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: skillList.map((skill) {
+                          return Chip(
+                            label: Text(skill),
+                            backgroundColor:
+                                const Color(0xFFCBD5E1),
+                            labelStyle: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ],
                   ),
                 ),
