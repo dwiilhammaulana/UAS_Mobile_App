@@ -57,7 +57,12 @@ class Profiledetail4 extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(16, 120, 16, 24),
             child: Column(
               children: [
-                
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    
+                  ),
+                )
               ],
             ),
 
