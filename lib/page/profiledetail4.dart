@@ -26,12 +26,18 @@ class Profiledetail4 extends StatelessWidget {
     "title": "Reptil",
     "image": "assets/images/reptil.jpeg",
   },
+  {
+    "title": "Membaca",
+    "image": "assets/images/menanam.jpeg",
+  },
   ];
 
 
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      
+    );
   }
 }
