@@ -258,3 +258,10 @@ class Profiledetail4 extends StatelessWidget {
     );
   }
 }
+
+Widget _infoTile({
+    required IconData icon,
+    required String title,
+    required String value,
+    bool isLast = false,
+  })
