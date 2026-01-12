@@ -81,6 +81,16 @@ class Profiledetail4 extends StatelessWidget {
                               const AssetImage("assets/images/nuha.png"),
                         ),
                       ),
+
+                      const SizedBox(height: 24),
+
+                      Text(
+                        nama,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 )
