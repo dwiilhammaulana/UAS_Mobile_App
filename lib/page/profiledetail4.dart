@@ -44,7 +44,12 @@ class Profiledetail4 extends StatelessWidget {
             height: 220,
             width: double.infinity,
             decoration: BoxDecoration(
-              
+              gradient: LinearGradient(
+                colors: [
+                 Color(0xFF0F172A),
+                  Color(0xFF1E293B),
+                ]
+                ) 
             ),
           )
         ],
