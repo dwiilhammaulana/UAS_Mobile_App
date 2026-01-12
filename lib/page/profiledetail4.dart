@@ -39,7 +39,11 @@ class Profiledetail4 extends StatelessWidget {
     return Scaffold(
        backgroundColor: const Color(0xFFF1F5F9),
        body: Stack(
-        
+        children: [
+          Container(
+            
+          )
+        ],
        ),
     );
   }
