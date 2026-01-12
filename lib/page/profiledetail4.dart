@@ -69,7 +69,13 @@ class Profiledetail4 extends StatelessWidget {
                         offset: const Offset(0, 10),
                     ),
                     ],
-
+                  ),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        
+                      )
+                    ],
                   ),
                 )
               ],
