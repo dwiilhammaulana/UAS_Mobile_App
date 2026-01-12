@@ -41,7 +41,8 @@ class Profiledetail4 extends StatelessWidget {
        body: Stack(
         children: [
           Container(
-            
+            height: 220,
+            width: double.infinity,
           )
         ],
        ),
