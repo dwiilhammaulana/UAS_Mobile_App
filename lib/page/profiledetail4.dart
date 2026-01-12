@@ -101,7 +101,10 @@ class Profiledetail4 extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
+
+                const SizedBox(height: 24),
+                
               ],
             ),
 
