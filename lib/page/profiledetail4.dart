@@ -117,6 +117,11 @@ class Profiledetail4 extends StatelessWidget {
                         title: "Nama Lengkap",
                         value: nama,
                       ),
+                       _infoTile(
+                        icon: Icons.person,
+                        title: "Nim",
+                        value: nim,
+                      ),
                     ],
                   ),
                 ),
