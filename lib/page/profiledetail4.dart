@@ -91,6 +91,14 @@ class Profiledetail4 extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 4),
+                      Text(
+                        kelas,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 )
