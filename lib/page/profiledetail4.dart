@@ -60,7 +60,14 @@ class Profiledetail4 extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [ 
+                      BoxShadow(
+                      
+                    ),
+                    ],
+
                   ),
                 )
               ],
