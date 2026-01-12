@@ -104,7 +104,22 @@ class Profiledetail4 extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 24),
-                
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    children: [
+                      _infoTile(
+                        icon: Icons.person,
+                        title: "Nama Lengkap",
+                        value: nama,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
 
