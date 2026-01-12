@@ -55,6 +55,11 @@ class Profiledetail4 extends StatelessWidget {
 
           SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(16, 120, 16, 24),
+            child: Column(
+              children: [
+                
+              ],
+            ),
 
           )
         ],
