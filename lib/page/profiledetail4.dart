@@ -264,4 +264,30 @@ Widget _infoTile({
     required String title,
     required String value,
     bool isLast = false,
-  })
+  }) {
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(icon, color: const Color(0xFF0F172A)),
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+          ),
+          subtitle: Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        if (!isLast)
+          const Divider(
+            height: 1,
+            indent: 16,
+            endIndent: 16,
+          ),
+      ],
+    );
+  }
+  
