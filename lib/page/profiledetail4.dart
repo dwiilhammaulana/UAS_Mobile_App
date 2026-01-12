@@ -166,6 +166,16 @@ class Profiledetail4 extends StatelessWidget {
                           );
                         }).toList(),
                       ),
+
+                      const SizedBox(height: 28),
+
+                      Text(
+                  "Dibuat dengan Flutter",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
                     ],
                   ),
                 ),
