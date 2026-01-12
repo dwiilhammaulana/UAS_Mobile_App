@@ -43,6 +43,9 @@ class Profiledetail4 extends StatelessWidget {
           Container(
             height: 220,
             width: double.infinity,
+            decoration: BoxDecoration(
+              
+            ),
           )
         ],
        ),
