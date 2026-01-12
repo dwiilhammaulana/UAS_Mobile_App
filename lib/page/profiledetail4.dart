@@ -122,6 +122,11 @@ class Profiledetail4 extends StatelessWidget {
                         title: "Nim",
                         value: nim,
                       ),
+                       _infoTile(
+                        icon: Icons.person,
+                        title: "Kelas",
+                        value: kelas,
+                      ),
                     ],
                   ),
                 ),
