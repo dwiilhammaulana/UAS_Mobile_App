@@ -73,8 +73,14 @@ class Profiledetail4 extends StatelessWidget {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        
-                      )
+                        radius: 52,
+                        backgroundColor: const Color(0xFFE2E8F0),
+                        child: CircleAvatar(
+                          radius: 48,
+                          backgroundImage:
+                              const AssetImage("assets/images/nuha.png"),
+                        ),
+                      ),
                     ],
                   ),
                 )
