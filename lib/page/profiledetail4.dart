@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Profiledetail4 extends StatelessWidget {
-  const Profiledetail4({super.key});
+class ProfileDetail4 extends StatelessWidget {
+  const ProfileDetail4({super.key});
 
   static const String nama = "Muhamad Ulin Nuha";
   static const String nim = "1123150002";
@@ -16,58 +16,62 @@ class Profiledetail4 extends StatelessWidget {
   static const List<Map<String, String>> hobiList = [
   {
     "title": "Ngoding",
-    "image": "assets/images/coding.jpeg",
+    "image": "assets/images/hobi_ngoding.jpg",
   },
   {
     "title": "Membaca",
-    "image": "assets/images/membaca.jpeg",
+    "image": "assets/images/hobi_membaca.jpg",
   },
   {
     "title": "Reptil",
-    "image": "assets/images/reptil.jpeg",
+    "image": "assets/images/hobi_olahraga.jpg",
   },
   {
-    "title": "Membaca",
-    "image": "assets/images/menanam.jpeg",
+    "title": "Menanam",
+    "image": "assets/images/hobi_olahraga.jpg",
   },
   ];
+
 
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: const Color(0xFFF1F5F9),
-       body: Stack(
+      backgroundColor: const Color(0xFFF1F5F9),
+      body: Stack(
         children: [
+          
           Container(
             height: 220,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                 Color(0xFF0F172A),
+                  Color(0xFF0F172A),
                   Color(0xFF1E293B),
-                ]
-                ), 
+                ],
+              ),
             ),
           ),
 
+         
           SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16, 120, 16, 24),
+            padding: const EdgeInsets.fromLTRB(16, 120, 16, 24),
             child: Column(
               children: [
+                
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
-                    boxShadow: [ 
+                    boxShadow: [
                       BoxShadow(
-                       color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withOpacity(0.08),
                         blurRadius: 18,
                         offset: const Offset(0, 10),
-                    ),
+                      ),
                     ],
                   ),
                   child: Column(
@@ -81,10 +85,8 @@ class Profiledetail4 extends StatelessWidget {
                               const AssetImage("assets/images/nuha.png"),
                         ),
                       ),
-
-                      const SizedBox(height: 24),
-
-                      Text(
+                      const SizedBox(height: 14),
+                      const Text(
                         nama,
                         style: TextStyle(
                           fontSize: 18,
@@ -95,16 +97,17 @@ class Profiledetail4 extends StatelessWidget {
                       Text(
                         kelas,
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          color: Colors.grey[600],
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                	
 
+                
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -117,15 +120,16 @@ class Profiledetail4 extends StatelessWidget {
                         title: "Nama Lengkap",
                         value: nama,
                       ),
-                       _infoTile(
-                        icon: Icons.person,
-                        title: "Nim",
+                      _infoTile(
+                        icon: Icons.numbers,
+                        title: "NIM",
                         value: nim,
                       ),
-                       _infoTile(
-                        icon: Icons.person,
+                      _infoTile(
+                        icon: Icons.school,
                         title: "Kelas",
                         value: kelas,
+                        isLast: true,
                       ),
                     ],
                   ),
@@ -133,9 +137,10 @@ class Profiledetail4 extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
+               
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(18),
+                  padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -151,7 +156,7 @@ class Profiledetail4 extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                     Wrap(
+                      Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: skillList.map((skill) {
@@ -166,10 +171,13 @@ class Profiledetail4 extends StatelessWidget {
                           );
                         }).toList(),
                       ),
+                    ],
+                  ),
+                ),
 
-                      const SizedBox(height: 28),
+                const SizedBox(height: 28),
 
-                      Text(
+                Text(
                   "Dibuat dengan Flutter",
                   style: TextStyle(
                     fontSize: 12,
@@ -177,9 +185,9 @@ class Profiledetail4 extends StatelessWidget {
                   ),
                 ),
 
-                 const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-                   Container(
+                Container(
   width: double.infinity,
   padding: const EdgeInsets.all(18),
   decoration: BoxDecoration(
@@ -246,20 +254,15 @@ class Profiledetail4 extends StatelessWidget {
     ],
   ),
 ),
-                    ],
-                  ),
-                ),
               ],
             ),
-
-          )
+          ),
         ],
-       ),
+      ),
     );
   }
-}
 
-Widget _infoTile({
+  Widget _infoTile({
     required IconData icon,
     required String title,
     required String value,
@@ -290,4 +293,4 @@ Widget _infoTile({
       ],
     );
   }
-  
+}
