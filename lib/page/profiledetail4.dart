@@ -13,6 +13,15 @@ class Profiledetail4 extends StatelessWidget {
     "Backend Developer",
   ];
 
+  static const List<Map<String, String>> hobiList = [
+  {
+    "title": "Ngoding",
+    "image": "assets/images/coding.jpeg",
+  },
+  ];
+
+
+
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
