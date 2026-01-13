@@ -16,19 +16,19 @@ class ProfileDetail4 extends StatelessWidget {
   static const List<Map<String, String>> hobiList = [
   {
     "title": "Ngoding",
-    "image": "assets/images/hobi_ngoding.jpg",
+    "image": "assets/images/coding.jpeg",
   },
   {
     "title": "Membaca",
-    "image": "assets/images/hobi_membaca.jpg",
+    "image": "assets/images/membaca.jpeg",
   },
   {
     "title": "Reptil",
-    "image": "assets/images/hobi_olahraga.jpg",
+    "image": "assets/images/reptil.jpeg",
   },
   {
     "title": "Menanam",
-    "image": "assets/images/hobi_olahraga.jpg",
+    "image": "assets/images/menanam.jpeg",
   },
   ];
 

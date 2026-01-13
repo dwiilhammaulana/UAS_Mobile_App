@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uas_mobile_app/page/add_todo.dart';
 
 import 'package:uas_mobile_app/page/profile.dart';
+import 'package:uas_mobile_app/page/profiledetail1.dart';
 import 'package:uas_mobile_app/page/profiledetail2.dart';
 import 'package:uas_mobile_app/page/profiledetail3.dart';
 import 'package:uas_mobile_app/page/profiledetail4.dart';
@@ -139,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetail2()),
+                  MaterialPageRoute(builder: (_) => ProfileDetail1()),
                 );
               },
             ),
