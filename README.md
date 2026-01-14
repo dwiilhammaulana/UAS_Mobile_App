@@ -166,7 +166,10 @@ flutter build apk --release
 flutter build apk --split-per-abi
 ```
 
-## 📁 Project Structurelib/
+## 📁 Project Structure
+
+```text
+lib/
 ├── models/
 │   └── todo_model.dart
 │
