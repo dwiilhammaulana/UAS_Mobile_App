@@ -17,22 +17,49 @@ https://global.ac.id/
   - Semester : GANJIL 
   - Tahun Akademik: 2025 - 2026 
   
+  Anggota: 
+  - Dwi ilham maulana 1123150008
+  - Sailendra Fas Faye 1123150198
+  - M Ramzy HIdayat SIregar 1123150076
+  - M ulin nuha 1123150008
   
 
 ## About The Project
 
 NoteZy adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk membantu pengguna dalam mencatat tugas tugas harian, mingguan atau bahkan bulanan. dengan antarmuka yang mudah difahami, fiture sinkronisasi cloud menggunakan firebase autentication, supabase dan fitur cek realtime nontifikasi tugas.
 
+# NoteZy
+
+### About The Project
+
+NoteZy adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk membantu pengguna dalam mencatat tugas-tugas harian, mingguan, atau bahkan bulanan. Dengan antarmuka yang mudah dipahami, fitur sinkronisasi cloud menggunakan Supabase, dan fitur cek real-time notifikasi tugas yang terintegrasi dengan Firebase Cloud Messaging (FCM).
+
 ### Key Features
 
-- **Modern UI/UX Design** - Antarmuka yang clean dan user-friendly
-- ....
-- ....
-- **Push Notifications** - Reminder untuk catatan penting
-- **Cloud Sync** - Sinkronisasi otomatis dengan Supabase
-- **Dark Mode** - Theme terang untuk kenyamanan pengguna
-- ...
-- ...
+- **Modern UI/UX Design** - Antarmuka yang clean, user-friendly, dan responsif.
+- **Premium Intro Animation** - Animasi logo muncul dari bawah ke tengah disertai teks NoteZy yang memudar dari samping kiri selama 3 detik.
+- **Smart Auth Persistence** - Pengecekan sesi login otomatis saat aplikasi dibuka; langsung masuk ke HomePage jika sesi masih aktif.
+- **Push Notifications** - Reminder real-time untuk catatan dan tugas penting menggunakan Firebase Cloud Messaging.
+- **Cloud Sync** - Sinkronisasi data otomatis dengan database Supabase agar data tetap aman dan terupdate.
+- **Foreground Notification Handling** - Banner notifikasi tetap muncul secara pop-up meskipun pengguna sedang aktif menggunakan aplikasi.
+- **Task Management** - Pengelolaan tugas harian, mingguan, hingga bulanan dengan sistem CRUD yang intuitif.
+- **Media Attachment** - Kemampuan untuk menyisipkan gambar ke dalam catatan tugas menggunakan Image Picker.
+- **Auto-Cleanup System** - Pembersihan otomatis token perangkat yang sudah tidak aktif melalui Supabase Edge Functions.
+
+### Tech Stack
+
+- **Framework** - Flutter (Dart)
+- **Backend Database** - Supabase (PostgreSQL)
+- **Authentication** - Supabase Auth
+- **Push Notifications** - Firebase Cloud Messaging (FCM)
+- **Serverless Logic** - Supabase Edge Functions (Deno / TypeScript)
+- **Typography** - Google Fonts (Lobster & Poppins)
+- **Local Notifications** - Flutter Local Notifications Plugin
+
+### How to Run
+
+1. Jalankan perintah `flutter pub get` untuk mengunduh semua dependensi.
+2. Jalankan perintah `flutter run'
 
 ## Ini Adalah Flow dari aplikasi kami
 
@@ -66,9 +93,9 @@ NoteZy adalah aplikasi mobile modern yang dikembangkan menggunakan Flutter untuk
 
 Lihat video demo aplikasi kami untuk melihat semua fitur dalam aksi!
 
-**[Watch Full Demo on YouTube](https://youtube.com/watch?v=dQw4w9WgXcQ)**
+**[Watch Full Demo on YouTube](https://youtu.be/j8aDZhhsk5A)**
 
-Alternative link: **[Google Drive Demo](https://drive.google.com/file/d/1234567890/view)**
+Alternative link: **[Google Drive Demo](https://youtu.be/j8aDZhhsk5A)**
 
 ## Download APK
 
@@ -105,7 +132,7 @@ Pastikan Anda sudah menginstall:
 
 1. Clone repository
 ```bash
-git clone https://github.com/yourusername/notes-app.git
+git clone https://github.com/dwiilhammaulana/UAS_Mobile_App.git
 cd notes-app
 ```
 
@@ -139,32 +166,34 @@ flutter build apk --release
 flutter build apk --split-per-abi
 ```
 
-## 📁 Project Structure
-
-```
-lib/
-├── main.dart                 # Entry point
-├── app/
-│   ├── routes/              # App routing
-│   └── themes/              # App themes
-├── models/                   # Data models
-│   ├── user.dart
-│   └── category.dart
-├── screens/                  # UI Screens
-│   ├── splash/
-│   ├── auth/
-│   │   ├── login_screen.dart
-│   │   └── register_screen.dart
-│   ├── home/
-│   ├── profile/
-│   └── settings/
-├── widgets/                  # Reusable widgets
-├── services/                 # Business logic
+## 📁 Project Structurelib/
+├── models/
+│   └── todo_model.dart
+│
+├── page/
+│   ├── add_todo.dart
+│   ├── home.dart
+│   ├── intro.dart
+│   ├── login.dart
+│   ├── profile.dart
+│   ├── profiledetail1.dart
+│   ├── profiledetail2.dart
+│   ├── profiledetail3.dart
+│   ├── profiledetail4.dart
+│   ├── splash_screen1.dart
+│   ├── splash_screen2.dart
+│   ├── splash_screen3.dart
+│   ├── splash_screenglobal.dart
+│   └── todo_detail.dart
+│
+├── services/
 │   ├── auth_service.dart
-│   ├── database_service.dart
-│   └── notification_service.dart
-└── utils/                    # Utilities & helpers
-```
+│   ├── notification_service.dart
+│   └── todo_service.dart
+│
+├── firebase_options.dart
+└── main.dart
+
 
 ## Authentication Flow
 
