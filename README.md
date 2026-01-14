@@ -246,10 +246,10 @@ CREATE TABLE tableABC (
 
 | Name | Role | Contributions |
 |------|------|---------------|
-| **Asis** | Project Lead & Backend Developer | - Authentication system<br>- Firebase integration<br>- API development<br>- Database design |
-| **Helen** | Frontend Developer | - UI/UX Design<br>- Home screen implementation<br>- Profile screen<br>- State management |
-| **Rio** | Full Stack Developer | - Splash screen<br>- Register screen<br>- Notification system<br>- Push notifications (FCM) |
-| **Adit** | Mobile Developer | - Login screen<br>- Local database (SQLite)<br>- Offline sync logic<br>- Testing & QA |
+| **Dwi ilham** | Project Lead & Backend Developer | - Authentication system<br>- Firebase integration<br>- API development<br>- Database design |
+| **Ramzy** | Frontend Developer | - UI/UX Design<br>- Home screen implementation<br>- Profile screen<br>- State management |
+| **Say lendra** | Full Stack Developer | - Splash screen<br>- Register screen<br>- Notification system<br>- Push notifications (FCM) |
+| **Nuha** | Mobile Developer | - Login screen<br>- Local database (SQLite)<br>- Offline sync logic<br>- Testing & QA |
 
 
 ## 📄 License
