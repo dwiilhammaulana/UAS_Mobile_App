@@ -91,9 +91,9 @@ class SplashPageGlobal extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _dot(true),
-                          _dot(true),
-                          _dot(true),
+                          _dot(false),
+                          _dot(false),
+                          _dot(false),
                         ],
                       ),
                       CircleAvatar(

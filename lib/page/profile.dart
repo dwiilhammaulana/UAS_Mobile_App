@@ -101,56 +101,67 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateProfile() async {
-  setState(() => _isLoading = true);
-  try {
-    final user = supabase.auth.currentUser!;
-    await supabase.from('profiles').upsert({
-      'id': user.id,
-      'email': user.email,
-      'full_name': _fullNameController.text,
-      'username': _usernameController.text,
-      'avatar_url': _imageUrl,
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+    setState(() => _isLoading = true);
+    try {
+      final user = supabase.auth.currentUser!;
+      await supabase.from('profiles').upsert({
+        'id': user.id,
+        'email': user.email,
+        'full_name': _fullNameController.text,
+        'username': _usernameController.text,
+        'avatar_url': _imageUrl,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HomePage()),
-      (route) => false,
-    );
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Error: $e"),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } finally {
-    if (!mounted) return;
-    setState(() => _isLoading = false);
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const HomePage()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     const Color accent = Color(0xFFFFC107);
-    const Color dark = Color(0xFF111827);
+    // const Color dark = Color(0xFF111827); // Tidak dipakai lagi karena button dihapus
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
-        title: const Text("Edit Profil"),
+        title: const Text("Edit Profil",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900)),
         backgroundColor: accent,
         elevation: 0,
         centerTitle: true,
       ),
+      // --- PERUBAHAN: Floating Action Button ditambahkan di sini ---
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0), // Warna Kuning sesuai tema
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255), // Text/Icon Hitam
+        icon: const Icon(Icons.save_rounded),
+        label: const Text(
+          'Simpan',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+        onPressed: _isLoading ? null : _updateProfile,
+      ),
       body: Stack(
         children: [
           ListView(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 24),
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 100), // Padding bawah ditambah agar tidak tertutup FAB
             children: [
               _CardShell(
                 child: Column(
@@ -196,27 +207,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
-              ElevatedButton(
-                onPressed: _updateProfile,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: dark,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: const Text(
-                  "SIMPAN PERUBAHAN",
-                  style: TextStyle(
-                    letterSpacing: 0.6,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 24),
+              // --- PERUBAHAN: ElevatedButton dihapus dari sini ---
+              
               Center(
                 child: Text(
                   "Pastikan data yang kamu isi sudah benar.",

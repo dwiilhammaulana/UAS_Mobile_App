@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:alarm/alarm.dart';
 
 class AddTodoSheet extends StatefulWidget {
   final SupabaseClient supabase;
@@ -20,6 +21,9 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
   TimeOfDay? _selectedDueTime;
   String _reminderOffset = 'none';
 
+  bool _isAlarm = false;
+  bool _isLoading = false; // Mencegah double tap tombol simpan
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -31,9 +35,15 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
     if (_titleController.text.isEmpty ||
         _selectedDueDate == null ||
         _selectedDueTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mohon lengkapi Judul, Tanggal, dan Jam')),
+      );
       return;
     }
 
+    setState(() => _isLoading = true);
+
+    // 2. Hitung Waktu Jatuh Tempo
     final DateTime fullDueDateTime = DateTime(
       _selectedDueDate!.year,
       _selectedDueDate!.month,
@@ -42,38 +52,83 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
       _selectedDueTime!.minute,
     );
 
+    // 3. Hitung Waktu Pengingat
     DateTime? reminderFullDateTime;
     if (_reminderOffset == '1_hour') {
       reminderFullDateTime = fullDueDateTime.subtract(const Duration(hours: 1));
     } else if (_reminderOffset == '3_hours') {
-      reminderFullDateTime =
-          fullDueDateTime.subtract(const Duration(hours: 3));
+      reminderFullDateTime = fullDueDateTime.subtract(const Duration(hours: 3));
     } else if (_reminderOffset == '1_day') {
       reminderFullDateTime = fullDueDateTime.subtract(const Duration(days: 1));
     }
 
     try {
-      await widget.supabase.from('todos').insert({
-        'user_id': widget.supabase.auth.currentUser!.id,
-        'title': _titleController.text,
-        'description': _descController.text,
-        'status': _selectedStatus,
-        'priority': _selectedPriority,
-        'due_date': DateFormat('yyyy-MM-dd').format(fullDueDateTime),
-        'due_time': DateFormat('HH:mm:ss').format(fullDueDateTime),
-        'reminder_date': reminderFullDateTime != null
-            ? DateFormat('yyyy-MM-dd').format(reminderFullDateTime)
-            : null,
-        'reminder_time': reminderFullDateTime != null
-            ? DateFormat('HH:mm:ss').format(reminderFullDateTime)
-            : null,
-        'reminder_sent': false,
-      });
+      // 4. Simpan ke Supabase
+      final user = widget.supabase.auth.currentUser;
+      if (user != null) {
+        final response = await widget.supabase.from('todos').insert({
+          'user_id': user.id,
+          'title': _titleController.text,
+          'description': _descController.text,
+          'status': _selectedStatus,
+          'priority': _selectedPriority,
+          'due_date': DateFormat('yyyy-MM-dd').format(fullDueDateTime),
+          'due_time': DateFormat('HH:mm:ss').format(fullDueDateTime),
+          'reminder_date': reminderFullDateTime != null
+              ? DateFormat('yyyy-MM-dd').format(reminderFullDateTime)
+              : null,
+          'reminder_time': reminderFullDateTime != null
+              ? DateFormat('HH:mm:ss').format(reminderFullDateTime)
+              : null,
+          'reminder_sent': false,
+          'is_alarm': _isAlarm,
+        }).select();
+
+        // 5. Jadwalkan Alarm (Hanya jika user memilih alarm)
+        if (_isAlarm && reminderFullDateTime != null) {
+          if (reminderFullDateTime.isAfter(DateTime.now())) {
+            
+            final newTodo = response.first;
+            final int alarmId = (newTodo['id'].toString().hashCode).abs(); 
+
+            // --- KONFIGURASI ALARM ---
+            final alarmSettings = AlarmSettings(
+              id: alarmId,
+              dateTime: reminderFullDateTime,
+              assetAudioPath: 'assets/alarm/alarm.wav', 
+              loopAudio: true, // Bunyi terus
+              vibrate: true,
+              volume: 1.0, 
+              fadeDuration: 3.0,
+              
+              // SETTING PENTING: TOMBOL MATIKAN DI NOTIFIKASI
+              notificationSettings: NotificationSettings(
+                title: "Pengingat: ${_titleController.text}",
+                body: "Waktunya mengerjakan tugas! Tekan tombol MATIKAN untuk stop.",
+                stopButton: "MATIKAN", // Tombol ini muncul di notifikasi
+                icon: 'ic_launcher',
+              ),
+            );
+
+            await Alarm.set(alarmSettings: alarmSettings);
+          }
+        }
+      }
 
       if (!mounted) return;
       Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tugas berhasil disimpan')),
+      );
+
     } catch (e) {
       debugPrint('Insert todo error: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -96,7 +151,7 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                 height: 5,
                 width: 48,
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.12),
+                  color: Colors.black.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(999),
                 ),
               ),
@@ -113,6 +168,8 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                 ),
               ),
               const SizedBox(height: 16),
+              
+              // Judul
               TextField(
                 controller: _titleController,
                 textInputAction: TextInputAction.next,
@@ -127,6 +184,8 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                 ),
               ),
               const SizedBox(height: 12),
+              
+              // Keterangan
               TextField(
                 controller: _descController,
                 textInputAction: TextInputAction.done,
@@ -142,31 +201,22 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                 ),
               ),
               const SizedBox(height: 14),
+
+              // Status & Prioritas
               Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
                       value: _selectedStatus,
                       items: const ['todo', 'pending', 'in_progress', 'completed']
-                          .map(
-                            (s) => DropdownMenuItem(
-                              value: s,
-                              child: Text(s.toUpperCase()),
-                            ),
-                          )
+                          .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))
                           .toList(),
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() => _selectedStatus = v);
-                      },
+                      onChanged: (v) => setState(() => _selectedStatus = v!),
                       decoration: InputDecoration(
                         labelText: 'Status',
                         filled: true,
                         fillColor: const Color(0xFFF3F4F6),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                       ),
                     ),
                   ),
@@ -175,31 +225,22 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                     child: DropdownButtonFormField<String>(
                       value: _selectedPriority,
                       items: const ['low', 'medium', 'high']
-                          .map(
-                            (p) => DropdownMenuItem(
-                              value: p,
-                              child: Text(p.toUpperCase()),
-                            ),
-                          )
+                          .map((p) => DropdownMenuItem(value: p, child: Text(p.toUpperCase())))
                           .toList(),
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() => _selectedPriority = v);
-                      },
+                      onChanged: (v) => setState(() => _selectedPriority = v!),
                       decoration: InputDecoration(
                         labelText: 'Prioritas',
                         filled: true,
                         fillColor: const Color(0xFFF3F4F6),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
+
+              // Reminder Offset
               DropdownButtonFormField<String>(
                 value: _reminderOffset,
                 items: const [
@@ -207,50 +248,56 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                   {'label': '1 Jam Sebelum', 'value': '1_hour'},
                   {'label': '3 Jam Sebelum', 'value': '3_hours'},
                   {'label': '1 Hari Sebelum', 'value': '1_day'},
-                ]
-                    .map(
-                      (item) => DropdownMenuItem<String>(
-                        value: item['value'],
-                        child: Text(item['label']!),
-                      ),
-                    )
-                    .toList(),
+                ].map((item) => DropdownMenuItem(value: item['value'], child: Text(item['label']!))).toList(),
                 onChanged: (v) {
-                  if (v == null) return;
-                  setState(() => _reminderOffset = v);
+                  setState(() {
+                    _reminderOffset = v!;
+                    if (v == 'none') _isAlarm = false;
+                  });
                 },
                 decoration: InputDecoration(
                   labelText: 'Ingatkan Saya',
                   filled: true,
                   fillColor: const Color(0xFFF3F4F6),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
+
+              // Switch Alarm
+              Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  activeColor: const Color(0xFF111827),
+                  title: const Text('Mode Alarm', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                  subtitle: const Text('Bunyi looping + tombol stop', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  value: _isAlarm,
+                  onChanged: _reminderOffset == 'none'
+                      ? null
+                      : (bool value) => setState(() => _isAlarm = value),
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // Tanggal & Jam
               Row(
                 children: [
                   Expanded(
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        _selectedDueDate == null
-                            ? 'Set Tanggal'
-                            : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
+                        _selectedDueDate == null ? 'Set Tanggal' : DateFormat('dd/MM/yyyy').format(_selectedDueDate!),
                         style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                       trailing: const Icon(Icons.calendar_month),
                       onTap: () async {
-                        final DateTime? date = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2100),
-                        );
-                        if (date == null) return;
-                        setState(() => _selectedDueDate = date);
+                        final d = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime(2100));
+                        if (d != null) setState(() => _selectedDueDate = d);
                       },
                     ),
                   ),
@@ -259,41 +306,34 @@ class _AddTodoSheetState extends State<AddTodoSheet> {
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        _selectedDueTime == null
-                            ? 'Set Jam'
-                            : _selectedDueTime!.format(context),
+                        _selectedDueTime == null ? 'Set Jam' : _selectedDueTime!.format(context),
                         style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
                       trailing: const Icon(Icons.access_time),
                       onTap: () async {
-                        final TimeOfDay? time = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (time == null) return;
-                        setState(() => _selectedDueTime = time);
+                        final t = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                        if (t != null) setState(() => _selectedDueTime = t);
                       },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 14),
+
+              // Tombol Simpan
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _saveTodo,
+                  onPressed: _isLoading ? null : _saveTodo,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF111827),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: const Text(
-                    'SIMPAN TUGAS',
-                    style: TextStyle(fontWeight: FontWeight.w900),
-                  ),
+                  child: _isLoading 
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    : const Text('SIMPAN TUGAS', style: TextStyle(fontWeight: FontWeight.w900)),
                 ),
               ),
               const SizedBox(height: 10),

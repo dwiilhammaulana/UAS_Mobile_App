@@ -1,8 +1,13 @@
+import 'dart:async'; 
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:alarm/alarm.dart';
+import 'package:flutter/services.dart'; 
+
+// Import halaman-halaman
 import 'package:uas_mobile_app/page/intro.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
 
@@ -22,24 +27,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
+// Logika membuka halaman detail saat notifikasi diklik
 Future<void> _openTodoById(String? todoId) async {
   if (todoId == null || todoId.isEmpty) return;
-
-  // tunggu UI siap supaya tidak kalah oleh Intro/Home
   await Future.delayed(const Duration(milliseconds: 500));
 
   try {
     final supabase = Supabase.instance.client;
-
     final todo = await supabase
         .from('todos')
         .select('*')
         .eq('id', todoId)
-        .single();
+        .maybeSingle();
 
-    navigatorKey.currentState?.push(
-      MaterialPageRoute(builder: (_) => TodoDetailPage(todo: todo)),
-    );
+    if (todo != null) {
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (_) => TodoDetailPage(todo: todo)),
+      );
+    }
   } catch (e) {
     debugPrint("Gagal buka todo: $e");
   }
@@ -47,9 +52,12 @@ Future<void> _openTodoById(String? todoId) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // 1. Init Alarm (Wajib paling awal)
+  await Alarm.init();
 
   await Firebase.initializeApp();
-
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await Supabase.initialize(
@@ -62,7 +70,6 @@ Future<void> main() async {
   const InitializationSettings initSettings =
       InitializationSettings(android: androidInit);
 
-  // klik notif local (saat foreground)
   await flutterLocalNotificationsPlugin.initialize(
     initSettings,
     onDidReceiveNotificationResponse: (details) async {
@@ -75,7 +82,6 @@ Future<void> main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(_androidChannel);
 
-  // tampilkan notif saat app foreground + bawa todo_id ke payload
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     final notif = message.notification;
     if (notif == null) return;
@@ -108,17 +114,58 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  
   @override
   void initState() {
     super.initState();
+    // Pantau App Lifecycle (Background/Foreground)
+    WidgetsBinding.instance.addObserver(this);
+    
     _setupNotifications();
+    
+    // Cek jika aplikasi dibuka saat alarm sedang bunyi (Cold Start)
+    _stopAlarmIfRinging(); 
+
+    // Listener Alarm
+    Alarm.ringStream.stream.listen((alarmSettings) {
+      debugPrint("Alarm ID ${alarmSettings.id} berbunyi. Muncul notifikasi dengan tombol STOP.");
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Jika user membuka aplikasi (Resumed) saat alarm bunyi, matikan suaranya
+    // (Asumsinya kalau user sudah buka app, dia sudah sadar ada reminder)
+    if (state == AppLifecycleState.resumed) {
+      _stopAlarmIfRinging();
+    }
+  }
+
+  /// LOGIKA BARU: Cukup matikan suara, JANGAN tutup aplikasi.
+  Future<void> _stopAlarmIfRinging() async {
+    try {
+      final allAlarms = await Alarm.getAlarms(); 
+      for (var alarm in allAlarms) {
+        final isRinging = await Alarm.isRinging(alarm.id);
+        if (isRinging) {
+          debugPrint("User aktif -> Stop alarm ID ${alarm.id}");
+          await Alarm.stop(alarm.id);
+        }
+      }
+    } catch (e) {
+      debugPrint("Error checking alarm: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _setupNotifications() async {
-    // final supabase = Supabase.instance.client;
     final messaging = FirebaseMessaging.instance;
-
     final settings = await messaging.requestPermission(
       alert: true,
       badge: true,
@@ -136,14 +183,14 @@ class _MyAppState extends State<MyApp> {
         await _saveTokenToSupabase(newToken);
       });
 
-      // app dibuka dari kondisi mati (killed) lewat notif
-      final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+      final initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
       if (initialMessage != null) {
         await _openTodoById(initialMessage.data['todo_id']);
       }
 
-      // app dibuka dari background lewat klik notif
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+      FirebaseMessaging.onMessageOpenedApp
+          .listen((RemoteMessage message) async {
         await _openTodoById(message.data['todo_id']);
       });
     }
@@ -164,9 +211,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
+      navigatorKey: navigatorKey, 
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Supabase Auth',
+      title: 'NoteZy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFFC107)),
         useMaterial3: true,

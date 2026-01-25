@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:lottie/lottie.dart'; // Pastikan package lottie sudah diinstall
 import 'package:uas_mobile_app/page/add_todo.dart';
 
+// Import halaman profile (sesuaikan dengan struktur projectmu)
 import 'package:uas_mobile_app/page/profile.dart';
 import 'package:uas_mobile_app/page/profiledetail1.dart';
 import 'package:uas_mobile_app/page/profiledetail2.dart';
 import 'package:uas_mobile_app/page/profiledetail3.dart';
 import 'package:uas_mobile_app/page/profiledetail4.dart';
 import 'package:uas_mobile_app/page/todo_detail.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,44 +23,87 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final SupabaseClient supabase = Supabase.instance.client;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late final Stream<List<Map<String, dynamic>>> _todoStream;
+  late Stream<List<Map<String, dynamic>>> _todoStream;
+
+  // --- LOGIKA MULTI SELECT ---
+  bool _isSelectionMode = false;
+  final Set<String> _selectedIds = {};
 
   @override
   void initState() {
     super.initState();
+    _initStream();
     _handleFcmToken();
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+      final user = supabase.auth.currentUser;
+      if (user == null) return;
+      try {
+        await supabase.from('firebase_tokens').upsert({
+          'user_id': user.id,
+          'fcm_token': newToken,
+          'updated_at': DateTime.now().toIso8601String(),
+        }).select();
+      } catch (e) {
+        debugPrint('FCM refresh save error: $e');
+      }
+    });
+  }
+
+  void _initStream() {
+    final user = supabase.auth.currentUser;
     _todoStream = supabase
         .from('todos')
         .stream(primaryKey: ['id'])
+        .eq('user_id', user?.id ?? '')
         .order('created_at', ascending: false);
+  }
+
+  // --- FUNGSI REFRESH (Tarik ke bawah) ---
+  Future<void> _refreshData() async {
+    setState(() {
+      _initStream();
+    });
+    // Jeda sedikit agar animasi lottie sempat terlihat
+    await Future.delayed(const Duration(milliseconds: 1500));
   }
 
   Future<void> _handleFcmToken() async {
     try {
-      final FirebaseMessaging messaging = FirebaseMessaging.instance;
-      final String? token = await messaging.getToken();
+      final user = supabase.auth.currentUser;
+      if (user == null) return;
 
-      if (token != null) {
-        final user = supabase.auth.currentUser;
-        if (user != null) {
-          await supabase.from('firebase_tokens').upsert({
-            'user_id': user.id,
-            'fcm_token': token,
-            'updated_at': DateTime.now().toIso8601String(),
-          });
-        }
-      }
+      final messaging = FirebaseMessaging.instance;
+      await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      final token = await messaging.getToken();
+      if (token == null || token.isEmpty) return;
+
+      await supabase.from('firebase_tokens').upsert({
+        'user_id': user.id,
+        'fcm_token': token,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).select();
     } catch (e) {
       debugPrint('FCM token error: $e');
     }
   }
 
-  Future<void> _deleteTodo(String id) async {
+  // --- FUNGSI HAPUS MASAL ---
+  Future<void> _deleteSelectedTodos() async {
+    final int count = _selectedIds.length;
+    if (count == 0) return;
+
     final bool confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Hapus Tugas'),
-            content: const Text('Yakin ingin menghapus tugas ini?'),
+            title: Text('Hapus $count Tugas?'),
+            content: const Text(
+                'Tugas yang dipilih akan dihapus permanen. Tindakan ini tidak bisa dibatalkan.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
@@ -77,24 +121,117 @@ class _HomePageState extends State<HomePage> {
     if (!confirm) return;
 
     try {
-      await supabase.from('todos').delete().eq('id', id);
+      await supabase
+          .from('todos')
+          .delete()
+          .filter('id', 'in', _selectedIds.toList());
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Terhapus')),
+        SnackBar(content: Text('$count tugas berhasil dihapus')),
       );
+
+      setState(() {
+        _isSelectionMode = false;
+        _selectedIds.clear();
+      });
     } catch (e) {
-      debugPrint('Delete todo error: $e');
+      debugPrint('Delete error: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menghapus: $e')),
+      );
     }
   }
 
+  void _toggleSelection(String id) {
+    setState(() {
+      if (_selectedIds.contains(id)) {
+        _selectedIds.remove(id);
+        if (_selectedIds.isEmpty) {
+          _isSelectionMode = false;
+        }
+      } else {
+        _selectedIds.add(id);
+      }
+    });
+  }
+
   Future<void> _toggleStatus(String id, String currentStatus) async {
+    if (_isSelectionMode) return;
     final String newStatus =
         currentStatus == 'completed' ? 'todo' : 'completed';
     try {
-      await supabase.from('todos').update({'status': newStatus}).eq('id', id);
+      await supabase
+          .from('todos')
+          .update({'status': newStatus}).eq('id', id);
     } catch (e) {
       debugPrint('Toggle status error: $e');
     }
+  }
+
+  // --- WIDGET LOTTIE LOADING ---
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            'assets/load/jump.json',
+            width: 200,
+            height: 200,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Memuat data...',
+            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- WIDGET LOTTIE EMPTY STATE ---
+  Widget _buildEmptyState() {
+    return RefreshIndicator(
+      onRefresh: _refreshData,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset(
+                    'assets/load/jump.json',
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Belum ada tugas',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF111827),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tekan tombol + untuk mulai',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Drawer _buildLeftDrawer() {
@@ -127,43 +264,8 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Dwi ilham maulana - 1123150008'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetail3()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Lendra - 1123150'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ProfileDetail1()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('ramzy - 1123150'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetail2()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Ulin Nuha - 1123150002'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProfileDetail4()),
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const ProfileDetail3()));
               },
             ),
             const Spacer(),
@@ -196,6 +298,8 @@ class _HomePageState extends State<HomePage> {
   Widget _buildProfileHeader() {
     final user = supabase.auth.currentUser;
     if (user == null) return const SizedBox.shrink();
+    // PERBAIKAN: Kode yang menyembunyikan profil saat selection mode sudah DIHAPUS.
+    // Profil akan selalu tampil.
 
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: supabase
@@ -273,22 +377,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.75),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: Colors.black.withValues(alpha: 0.06),
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: Color(0xFF111827),
-                  ),
-                ),
+                const Icon(Icons.arrow_forward_ios, size: 16),
               ],
             ),
           ),
@@ -326,13 +415,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(width: 10),
-          Text(
-            count.toString(),
-            style: TextStyle(
-              color: Colors.grey[500],
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+          Text(count.toString(),
+              style: TextStyle(
+                  color: Colors.grey[500], fontWeight: FontWeight.w800)),
         ],
       ),
     );
@@ -342,6 +427,8 @@ class _HomePageState extends State<HomePage> {
     final bool isCompleted = item['status'] == 'completed';
     final String title = (item['title'] as String?) ?? '';
     final String priority = (item['priority'] as String?) ?? 'low';
+    final String id = item['id'] as String;
+    final bool isSelected = _selectedIds.contains(id);
 
     final Color priorityColor = priority == 'high'
         ? Colors.red
@@ -362,29 +449,47 @@ class _HomePageState extends State<HomePage> {
         } else {
           dueLabel = dateText;
         }
-      } catch (_) {
-        dueLabel = null;
-      }
+      } catch (_) {}
     }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
       child: Material(
-        color: Colors.white,
+        color: isSelected ? const Color(0xFFFFF8E1) : Colors.white,
         borderRadius: BorderRadius.circular(18),
         elevation: 0,
         child: InkWell(
           borderRadius: BorderRadius.circular(18),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => TodoDetailPage(todo: item)),
-          ),
-          onLongPress: () => _deleteTodo(item['id'] as String),
+          onTap: () {
+            if (_isSelectionMode) {
+              _toggleSelection(id);
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => TodoDetailPage(todo: item)));
+            }
+          },
+          onLongPress: () {
+            if (!_isSelectionMode) {
+              setState(() {
+                _isSelectionMode = true;
+                _selectedIds.add(id);
+              });
+            } else {
+              _toggleSelection(id);
+            }
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFFFFC107)
+                    : Colors.black.withValues(alpha: 0.06),
+                width: isSelected ? 2 : 1,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.04),
@@ -395,18 +500,27 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                IconButton(
-                  onPressed: () => _toggleStatus(
-                    item['id'] as String,
-                    item['status'] as String,
+                if (_isSelectionMode)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Icon(
+                      isSelected
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                      color: isSelected ? const Color(0xFFFFC107) : Colors.grey,
+                    ),
+                  )
+                else
+                  IconButton(
+                    onPressed: () =>
+                        _toggleStatus(id, item['status'] as String),
+                    icon: Icon(
+                      isCompleted
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: isCompleted ? Colors.green : Colors.grey[300],
+                    ),
                   ),
-                  icon: Icon(
-                    isCompleted
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
-                    color: isCompleted ? Colors.green : Colors.grey[300],
-                  ),
-                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Column(
@@ -431,14 +545,11 @@ class _HomePageState extends State<HomePage> {
                             Icon(Icons.event,
                                 size: 14, color: Colors.grey[600]),
                             const SizedBox(width: 6),
-                            Text(
-                              dueLabel,
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            Text(dueLabel,
+                                style: TextStyle(
+                                    color: Colors.grey[700],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ],
@@ -453,22 +564,18 @@ class _HomePageState extends State<HomePage> {
                     color: priorityColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(999),
                     border: Border.all(
-                      color: priorityColor.withValues(alpha: 0.30),
-                    ),
+                        color: priorityColor.withValues(alpha: 0.30)),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.flag, size: 16, color: priorityColor),
                       const SizedBox(width: 6),
                       Text(
                         priority.toUpperCase(),
                         style: TextStyle(
-                          color: priorityColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.2,
-                        ),
+                            color: priorityColor,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900),
                       ),
                     ],
                   ),
@@ -482,8 +589,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Map<String, dynamic>> _sortWithHighOnTop(
-    List<Map<String, dynamic>> items,
-  ) {
+      List<Map<String, dynamic>> items) {
     final List<Map<String, dynamic>> result =
         List<Map<String, dynamic>>.from(items);
     result.sort((a, b) {
@@ -499,140 +605,102 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // PERBAIKAN: AppBar dibuat statis (tidak berubah meski isSelectionMode true)
+    // agar header tetap "seperti biasa".
+    final AppBar appBar = AppBar(
+      title: const Text('Task Manager',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w900)),
+      backgroundColor: const Color(0xFFFFC107),
+      elevation: 0,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.logout, color: Colors.black),
+          onPressed: () async {
+            await supabase.auth.signOut();
+            if (!mounted) return;
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
+      ],
+    );
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color(0xFFF6F7FB),
-      resizeToAvoidBottomInset: false,
       drawer: _buildLeftDrawer(),
-      appBar: AppBar(
-        title: const Text(
-          'Task Manager',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900),
-        ),
-        backgroundColor: const Color(0xFFFFC107),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black),
-            onPressed: () async {
-              await supabase.auth.signOut();
-              if (!mounted) return;
-              Navigator.pushReplacementNamed(context, '/');
-            },
-          ),
-        ],
-      ),
+      appBar: appBar,
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: _todoStream,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildLoadingState();
           }
 
           final List<Map<String, dynamic>> todos = snapshot.data!;
-          final List<Map<String, dynamic>> inProgress = _sortWithHighOnTop(
-            todos.where((t) => t['status'] == 'in_progress').toList(),
-          );
-          final List<Map<String, dynamic>> todoList = _sortWithHighOnTop(
-            todos.where((t) => t['status'] == 'todo').toList(),
-          );
-          final List<Map<String, dynamic>> pending = _sortWithHighOnTop(
-            todos.where((t) => t['status'] == 'pending').toList(),
-          );
-          final List<Map<String, dynamic>> completed = _sortWithHighOnTop(
-            todos.where((t) => t['status'] == 'completed').toList(),
-          );
 
           if (todos.isEmpty) {
-            return ListView(
-              children: [
-                _buildProfileHeader(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                  child: Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(
-                        color: Colors.black.withValues(alpha: 0.06),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 16,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.inbox_outlined, size: 44),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Belum ada tugas',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xFF111827),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'Tekan tombol + untuk menambahkan tugas baru.',
-                          style: TextStyle(
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 120),
-              ],
-            );
+            return _buildEmptyState();
           }
 
-          return ListView(
-            children: [
-              _buildProfileHeader(),
-              if (inProgress.isNotEmpty) ...[
-                _buildSectionHeader(
-                  'IN PROGRESS',
-                  inProgress.length,
-                  Colors.deepPurple,
-                ),
-                ...inProgress.map(_buildTaskItem),
+          final inProgress = _sortWithHighOnTop(
+              todos.where((t) => t['status'] == 'in_progress').toList());
+          final todoList = _sortWithHighOnTop(
+              todos.where((t) => t['status'] == 'todo').toList());
+          final pending = _sortWithHighOnTop(
+              todos.where((t) => t['status'] == 'pending').toList());
+          final completed = _sortWithHighOnTop(
+              todos.where((t) => t['status'] == 'completed').toList());
+
+          return RefreshIndicator(
+            onRefresh: _refreshData,
+            color: const Color(0xFFFFC107),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                _buildProfileHeader(), // Profile tetap muncul
+                if (inProgress.isNotEmpty) ...[
+                  _buildSectionHeader(
+                      'IN PROGRESS', inProgress.length, Colors.deepPurple),
+                  ...inProgress.map(_buildTaskItem),
+                ],
+                if (todoList.isNotEmpty) ...[
+                  _buildSectionHeader('TO DO', todoList.length, Colors.grey),
+                  ...todoList.map(_buildTaskItem),
+                ],
+                if (pending.isNotEmpty) ...[
+                  _buildSectionHeader('PENDING', pending.length, Colors.blue),
+                  ...pending.map(_buildTaskItem),
+                ],
+                if (completed.isNotEmpty) ...[
+                  _buildSectionHeader(
+                      'COMPLETED', completed.length, Colors.green),
+                  ...completed.map(_buildTaskItem),
+                ],
+                const SizedBox(height: 120),
               ],
-              if (todoList.isNotEmpty) ...[
-                _buildSectionHeader('TO DO', todoList.length, Colors.grey),
-                ...todoList.map(_buildTaskItem),
-              ],
-              if (pending.isNotEmpty) ...[
-                _buildSectionHeader('PENDING', pending.length, Colors.blue),
-                ...pending.map(_buildTaskItem),
-              ],
-              if (completed.isNotEmpty) ...[
-                _buildSectionHeader('COMPLETED', completed.length, Colors.green),
-                ...completed.map(_buildTaskItem),
-              ],
-              const SizedBox(height: 120),
-            ],
+            ),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFFFFC107),
-        foregroundColor: Colors.black,
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'Tambah',
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
-        onPressed: _showAddSheet,
-      ),
+      // PERBAIKAN: Floating Action Button tetap berubah merah saat selection mode
+      floatingActionButton: _isSelectionMode
+          ? FloatingActionButton.extended(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.delete_outline),
+              label: Text('Hapus (${_selectedIds.length})',
+                  style: const TextStyle(fontWeight: FontWeight.w900)),
+              onPressed: _deleteSelectedTodos,
+            )
+          : FloatingActionButton.extended(
+              backgroundColor: const Color(0xFFFFC107),
+              foregroundColor: Colors.black,
+              icon: const Icon(Icons.add),
+              label: const Text('Tambah',
+                  style: TextStyle(fontWeight: FontWeight.w900)),
+              onPressed: _showAddSheet,
+            ),
     );
   }
 }
